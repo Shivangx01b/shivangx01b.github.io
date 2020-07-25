@@ -62,7 +62,7 @@ func main () {
 }
  
 
-func getPointer () (thisisapointer *int) {
+func thisisapointer() (apointer *int) {
   a := 234
   return &a
 }
@@ -150,5 +150,97 @@ myfunc := func() bool {
 }
 ```
 
+- Multiple returns
+
+```go
+a, b := getMessage()
+
+func getMessage() (a string, b string) {
+  return "Hello", "World"
+}
+```
+
+- Named return values
+```go
+func split(sum int) (x, y int) {
+  x = sum * 4 / 9
+  y = sum - x
+  return
+}
+```
 
 
+## Concurrency
+
+- Goroutines
+
+```go
+func main() {
+  // A "channel"
+  ch := make(chan string)
+
+  // Start concurrent routines
+  go push("Moe", ch)
+  go push("Larry", ch)
+  go push("Curly", ch)
+
+  // Read 3 results
+  // (Since our goroutines are concurrent,
+  // the order isn't guaranteed!)
+  fmt.Println(<-ch, <-ch, <-ch)
+}
+ 
+
+
+func push(name string, ch chan string) {
+  msg := "Hey, " + name
+  ch <- msg
+}
+```
+
+- Buffered channels
+
+```go
+ch := make(chan int, 2)
+ch <- 1
+ch <- 2
+ch <- 3 //this will error out as there are only 2 channel
+```
+
+- WaitGroup
+
+```go
+import "sync"
+
+func main() {
+  var wg sync.WaitGroup
+  
+  for _, item := range itemList {
+    // Increment WaitGroup Counter
+    wg.Add(1)
+    go doOperation(item)
+  }
+  // Wait for goroutines to finish
+  wg.Wait()
+  
+}
+ 
+ 
+func doOperation(item string) {
+  defer wg.Done()
+  // do operation on item
+  // ...
+}
+```
+
+
+## Control Error
+
+- Defer
+
+```go
+func main() {
+  defer fmt.Println("Done")
+  fmt.Println("Working...")
+}
+```
