@@ -13,7 +13,7 @@ tags:
 author: shivangx01b
 ---
 
-I decided to write something and not just waste my time in free time ¯\_(?)_/¯. So yeah ! I decided to write about Go as currently I'm learning it too :), So here we go !.
+I decided to write something and not just waste my time in free time  ¯\_(ツ)_/¯ . So yeah ! I decided to write about Go as currently I'm learning it too :), So here we go !.
 
 ## BASICS
 
@@ -45,7 +45,7 @@ var numbers [5]int
 numbers := [...]int{0, 0, 0, 0, 0}
 ```
 
--Slices
+- Slices
 
 ```go
 slice := []int{2, 3, 4}
