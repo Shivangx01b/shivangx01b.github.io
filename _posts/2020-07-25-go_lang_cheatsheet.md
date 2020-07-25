@@ -13,9 +13,9 @@ tags:
 author: shivangx01b
 ---
 
-I decided to write something and not just waste my time in free time ¯\_(?)_/¯. So yeah ! I decided to write about Go as currently I'm learning it too :), So here we go !.
+I decided to write something and not just waste my time in free time Â¯\_(?)_/Â¯. So yeah ! I decided to write about Go as currently I'm learning it too :), So here we go !.
 
-##BASICS
+## BASICS
 
 - Strings
 
