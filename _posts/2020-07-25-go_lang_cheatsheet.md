@@ -81,5 +81,74 @@ f := float64(i)
 u := uint(i)
 ```
 
+## Control Flow
+
+- Conditional if/else
+
+```go
+if day == "sunday" || day == "saturday" {
+  rest()
+} else if day == "monday" && isTired() {
+  groan()
+} else {
+  work()
+}
+```
+
+- Statements in if
+
+```go
+if _, err := getResult(); err != nil {
+  fmt.Println("Uh oh")
+}
+```
+
+- Switch
+
+```go
+switch day {
+  case "sunday":
+    // cases don't "fall through" by default!
+    fallthrough
+
+  case "saturday":
+    rest()
+
+  default:
+    work()
+}
+```
+
+- For Loop
+
+```go
+for count := 0; count <= 10; count++ {
+  fmt.Println("My counter is at", count)
+}
+```
+
+- For Range Loop
+
+```go
+entry := []string{"Jack","John","Jones"}
+for i, val := range entry {
+  fmt.Printf("At position %d, the character %s is present\n", i, val)
+}
+```
+
+
+
+
+
+## Functions
+
+- Lambdas
+
+```go
+myfunc := func() bool {
+  return x > 10000
+}
+```
+
 
 
