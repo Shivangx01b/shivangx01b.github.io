@@ -9,4 +9,4 @@ permalink: /about/
 
 # About
 
-18 y/o | Bug Hunter | Coder | ML | Penteration Tester 
+I'm 18 y/o bug hunter and like red teaming stuffs..like to automate things with python and go and learning some machine learing stuffs at free time ¯\_(ツ)_/¯ 
