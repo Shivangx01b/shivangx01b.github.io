@@ -9,4 +9,4 @@ permalink: /about/
 
 # About
 
-I'm 18 y/o bug hunter and like red teaming stuffs..like to automate things with python and go and learning some machine learing stuffs at free time ¯\_(ツ)_/¯ 
+I'm 18 y/o bug hunter and like red teaming stuffs..like to automate things with python and go and learning some machine learing stuffs at free time. No certification all self learned if that make sense ¯\_(ツ)_/¯ .
