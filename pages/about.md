@@ -9,4 +9,4 @@ permalink: /about/
 
 # About
 
-Todo: Add seomthing here before it's to late .
+18 y/o | Bug Hunter | Coder | ML | Penteration Tester 
