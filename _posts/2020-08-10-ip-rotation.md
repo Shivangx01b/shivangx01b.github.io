@@ -21,7 +21,7 @@ We will say this traget as "private.com" through out the article. So let's jump 
 ![Alt Text](https://media.giphy.com/media/CjmvTCZf2U3p09Cn0h/giphy.gif)
 
 Like always whenever I hunt on any program I start with the main web app and check out their stuffs there...well why not ?
-So I jumoed to login created an accout and started to  check if web app implements rate limit or not ...
+So I jumped to login created an accout and started to  check if web app implements rate limit or not ...
 Well web app says that it implements google recaptcha so I thought ..well I try to remove header from the request and removed that recaptcha part from json request..like
 
 - Original json request:
@@ -68,7 +68,7 @@ So now I know what to do ;)
   - IpRotate which is cool extension which uses aws api gatways and proxy your traffic with unique ips 
   - Create a script (as most time internal teams would not like to install a extension for a specific bug)
 
-So I made the following simple python3 script which proxies your every login attempt through different ips 
+So I made the following simple python3 script which proxies your every login attempt through different ips and got the pass after like 5 mins
 
 ```python
 
