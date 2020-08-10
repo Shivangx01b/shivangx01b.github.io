@@ -22,7 +22,7 @@ We will say this traget as "private.com" through out the article. So let's jump 
 
 Like always whenever I hunt on any program I start with the main web app and check out their stuffs there...well why not ?
 So I jumped to login created an accout and started to  check if web app implements rate limit or not ...
-Well web app says that it implements google recaptcha so I thought ..well I try to remove header from the request and removed that recaptcha part from json request..like
+Well web app say's that it implements google recaptcha so I thought ..well I try to remove header from the request and removed that recaptcha part from json request..like
 
 - Original json request:
 ```
@@ -40,7 +40,7 @@ But no luck
 ```
 {"error":"recaptchaToken not found"}
 ```
-Next thing I checked if web app reuses this recptcha?
+Next thing I checked if web app reuses this recaptcha?
 And well yes ...now response was like 
 
 - Response:
@@ -49,7 +49,7 @@ And well yes ...now response was like
 ```
 ![Alt Text](https://media.giphy.com/media/dLolp8dtrYCJi/giphy.gif)
 
-Now the next thing remains is to check it we can bruteforce this ...Well after 3 ~ 4 tried including the above requests so total like ~ 7 requests I got response like 
+Now the next thing remains is to check if we can bruteforce this ...Well after 3 ~ 4 tried including the above requests so total like ~ 7 requests I got response like 
 
 ```
 {"error":"Something went wrong, Ip 47.1.X.x" is added to blacklist try again later"}
@@ -65,7 +65,7 @@ So now I know what to do ;)
 ![Alt Text](https://media.giphy.com/media/BlWF2vzpIPB0A/giphy.gif)
 
 - Now I had two options either use:
-  - IpRotate which is cool extension which uses aws api gatways and proxy your traffic with unique ips 
+  - IpRotate which is cool extension which uses aws api gatways to proxy your traffic with unique ips 
   - Create a script (as most time internal teams would not like to install a extension for a specific bug)
 
 So I made the following simple python3 script which proxies your every login attempt through different ips and got the pass after like 5 mins
@@ -132,7 +132,7 @@ Accepted and bounty awarded $_$
 - Takeaway
   - Trying new thing helps
 
-Hope you guys learned seomthing new from this post :)
+Hope you guys learned something new from this post :)
 See you next time !
 
 ![Alt Text](https://media.giphy.com/media/KEkCtOMhkdze5azTMa/giphy.gif)
