@@ -18,7 +18,7 @@ author: shivangx01b
 Hey guys I'm back with my another finding and also another one which does not implement google recaptcha properly and made this attack possible ...will see how.
 We will say this traget as "private.com" through out the article. So let's jump into it !
 
-![Alt Text](https://media.giphy.com/media/dLolp8dtrYCJi/giphy.gif)
+![Alt Text](https://media.giphy.com/media/CjmvTCZf2U3p09Cn0h/giphy.gif)
 
 Like always whenever I hunt on any program I start with the main web app and check out their stuffs there...well why not ?
 So I jumoed to login created an accout and started to  check if web app implements rate limit or not ...
@@ -40,13 +40,14 @@ But no luck
 ```
 {"error":"recaptchaToken not found"}
 ```
-Next thing I checked it web app reuses it's recaptchas?
+Next thing I checked if web app reuses this recptcha?
 And well yes ...now response was like 
 
 - Response:
 ```
 {"error":"Incorrect email/Password"}
 ```
+![Alt Text](https://media.giphy.com/media/dLolp8dtrYCJi/giphy.gif)
 
 Now the next thing remains is to check it we can bruteforce this ...Well after 3 ~ 4 tried including the above requests so total like ~ 7 requests I got response like 
 
@@ -60,6 +61,7 @@ So I tried to login with my phone data with random password and correct email an
 {"error":"Incorrect email/Password"}
 ```
 So now I know what to do ;)
+
 ![Alt Text](https://media.giphy.com/media/BlWF2vzpIPB0A/giphy.gif)
 
 - Now I had two options either use:
