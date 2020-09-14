@@ -1,5 +1,5 @@
 ---
-date: 2020-07-26 22:55:45
+date: 2020-09-14 22:55:45
 layout: post
 title: Machine Learning For WAFs
 image: https://i.ibb.co/LP1hYWz/waf-image.jpg
