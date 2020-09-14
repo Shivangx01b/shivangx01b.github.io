@@ -11,7 +11,6 @@ tags:
   - webapp
 author: shivangx01b
 ---
-
 ### Machine Learning For WAFs 
 ###### Reasearch Paper by - Shivang Kumar
 
@@ -45,6 +44,8 @@ Have some knowledge regarding machine learning which is really easy to understan
 
 - Conclusion
 
+[Download PDF Version](https://shivangx01b.github.io/)
+
 ## Introduction
 **Machine Learning** is of of the most rapidly growing thing and it's integration with cyber security is just seems amazing. **WAFs** are the most crucial part for the moder web apps.
 It's intergation with **machine learning** is one the most sizzling thing from past years.
@@ -60,19 +61,16 @@ Github is the most lovely thing ever happend for hacker as we can easily get our
 
 - Links:
 
-```
-#Valids will be prcessed from 
-https://github.com/vladan-stojnic/ML-based-WAF/blob/master/Dataset/ECML.json
+##### Valids will be prcessed from 
+[ECML](https://github.com/vladan-stojnic/ML-based-WAF/blob/master/Dataset/ECML.json)
 
-#Payloads are collected from
-https://github.com/swisskyrepo/PayloadsAllTheThings
-https://github.com/1N3/IntruderPayloads
-```
-- Note: Fully processed ready to be traned data set is availabe here 
+######Payloads are collected from
+[Payload_set_1](https://github.com/swisskyrepo/PayloadsAllTheThings)
+[Payload_set_2](https://github.com/1N3/IntruderPayloads)
 
-```
-MY link ***
-```
+- Note: Fully processed ready to be trained data set is availabe here 
+
+[Dataset](https://shivangx01b.github.io/)
 
 ### Processing Collected Data
 Now we have our payloads and valid lists collected let's process it ! 
@@ -353,6 +351,10 @@ waf_check(parameters, temp_array)
 [!] Attack detected!...Hold your horses!
 [~] Attack type xss
 ```
+
+##### Get the above codes
+[Code][https://shivangx01b.github.io/]
+
 
 
 ## Conclusion 
