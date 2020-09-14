@@ -353,7 +353,7 @@ waf_check(parameters, temp_array)
 ```
 
 ##### Get the above codes
-[Code][https://shivangx01b.github.io/]
+[Code](https://shivangx01b.github.io/)
 
 
 
