@@ -58,8 +58,8 @@ Github is the most lovely thing ever happend for hacker as we can easily get our
 
 - Links:
 
-##### Valids will be prcessed from 
-[ECML](https://github.com/vladan-stojnic/ML-based-WAF/blob/master/Dataset/ECML.json)
+##### Valids will be processed from 
+[ECML](http://www.lirmm.fr/pkdd2007-challenge/)
 
 ##### Payloads are collected from
 [Payload_set_1](https://github.com/swisskyrepo/PayloadsAllTheThings)
