@@ -59,6 +59,7 @@ For most of the time if projects are old ..then datasets are easily availabe fro
 Github is the most lovely thing ever happend for hacker as we can easily get our raw payloads we just need to preprocess it . So we will get all out payloads for various attack types from there and valid quries which waf should allow users to pass through. Make sure that valid quries showed be more than payloads otherwise waf will block everything and also not very big that every payloads get undected !
 
 - Links:
+
 ```
 #Valids will be prcessed from 
 https://github.com/vladan-stojnic/ML-based-WAF/blob/master/Dataset/ECML.json
@@ -68,6 +69,7 @@ https://github.com/swisskyrepo/PayloadsAllTheThings
 https://github.com/1N3/IntruderPayloads
 ```
 - Note: Fully processed ready to be traned data set is availabe here 
+
 ```
 MY link ***
 ```
@@ -80,6 +82,7 @@ Now we have our payloads and valid lists collected let's process it !
 - Code used
 
 ```python
+
 #Changing json to a csv
 import pandas as pd
 df_valid_tmp = pd.read_json ('ecml.json')
@@ -135,6 +138,7 @@ Now time to merge it with **valid.csv**
 - Code used:
 
 ```python
+
 #Prepare payloads's dataframe
 df = pd.read_csv('dataset.csv').drop(columns='Unnamed: 0')
 
@@ -152,7 +156,6 @@ clean_df
 ```
 
 ```
-
 Payloads	Types
 0	<select onbeforecut="alert(1)" contenteditable...	xss
 1	<th oncontextmenu="alert(1)">test</th>	xss
@@ -172,6 +175,7 @@ Pretty cool dataset for machine learning model !
 - Save dataset as a csv
 
 ```python
+
 clean_df.to_csv ('waf_dataset.csv', index = None)
 ```
 
@@ -277,6 +281,7 @@ pipe.fit(trainX, trainY)
 - Code used:
 
 ```python
+
 #Save the model for future use
 import pickle
 
@@ -298,6 +303,7 @@ Now let's test it !
 - Code used:
 
 ```python
+
 #List of payloads to test waf model
 parameters = ["%3f%0dshivang:crlf=injection", "query=home&homeprice=4300","#shivang{{5*7}}","<pre><!--#exec cmd=\"id\"--></pre>","../\\\\\\../\\\\\\../\\\\\\etc/passwd%00%00", "query=shivang)))' OR 1=2#-- -", 
               "something;|id|", "{$gt: ''}",
