@@ -63,6 +63,41 @@ Stay tuned as we embark on this exciting journey to unravel the intricacies of l
 ![Alt Text](https://i.ibb.co/n3BZ9TG/house.webp)
 
 
+## The Mathematics of Linear Regression
+
+
+
+Definition of Linear Regression
+
+Linear regression is a statistical method used in machine learning and data analysis for modeling the relationship between a dependent variable and one or more independent variables. The essence of linear regression is to find a linear relationship or trend in the data. This approach is particularly useful for predicting the value of the dependent variable based on the values of the independent variables.
+
+![Alt Text](https://i.ibb.co/Y7Z7tF3/lr.png)
+
+The Linear Equation: y = mx + c
+The fundamental equation of linear regression is y = mx + c. Here:
+
+y represents the dependent variable - the variable we aim to predict or estimate.
+x represents the independent variable - the variable we use for making predictions.
+m is the slope of the line, which indicates the rate at which y changes for a unit change in x.
+c is the y-intercept, the value of y when x is 0.
+In the context of our house price example, if y represents house prices and x represents house sizes, m would indicate how much the price increases per square meter, and c would be the base price of a house when its size is zero.
+
+
+
+Cost Function: Mean Squared Error (MSE)
+
+![Alt Text](https://i.ibb.co/S39hpnb/mse.png)
+
+The Mean Squared Error (MSE) is a widely used cost function for linear regression. It measures the average squared difference between the actual and predicted values. The formula for [MSE](https://en.wikipedia.org/wiki/Mean_squared_error) is:
+
+**MSE = N 1 ​ ∑ i=1 N ​ (actual y ​ −predicted y ​ ) 2**
+
+where N is the number of data points. The goal in linear regression is to minimize this MSE, which would imply that our model's predictions are as close to the actual values as possible.
+
+Optimization: Gradient Descent
+Gradient descent is an optimization algorithm used to minimize the MSE in linear regression. It works by iteratively adjusting the parameters m and c to reduce the cost (MSE). The algorithm takes steps proportional to the negative of the gradient (or approximate gradient) of the function at the current point. If correctly implemented, it leads us to the minimum of the function, i.e., the best values of m and c for our linear model.
+
+
 
 
 
