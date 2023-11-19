@@ -1,7 +1,7 @@
 ---
 date: 2020-09-14 22:55:45
 layout: post
-title: Machine Learning For WAFs
+title: Machine Learning For WAF
 image: https://i.ibb.co/LP1hYWz/waf-image.jpg
 optimized_image: https://i.ibb.co/LP1hYWz/waf-image.jpg
 category: Machine Learning
@@ -11,7 +11,7 @@ tags:
   - webapp
 author: shivangx01b
 ---
-### Machine Learning For WAFs 
+### Machine Learning For WAF 
 ###### Research Paper by - Shivang Kumar
 
 #### Abstract
