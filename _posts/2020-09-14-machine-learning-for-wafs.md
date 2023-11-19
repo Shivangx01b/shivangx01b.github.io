@@ -11,7 +11,7 @@ tags:
   - webapp
 author: shivangx01b
 ---
-### Machine Learning For WAFs 
+### Machine Learning For WAF 
 ###### Research Paper by - Shivang Kumar
 
 #### Abstract
