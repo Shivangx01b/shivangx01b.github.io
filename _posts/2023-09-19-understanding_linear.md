@@ -1,5 +1,5 @@
 ---
-date: 2020-09-19 22:55:45
+date: 2023-09-19 22:55:45
 layout: post
 title: Understanding Linear Regression. Mathematical Foundations and Implementations in PyTorch and TensorFlow
 image: https://i.ibb.co/6mQpjv1/logo.webp
