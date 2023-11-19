@@ -60,7 +60,7 @@ Stay tuned as we embark on this exciting journey to unravel the intricacies of l
 
 - House Price Chart
 
-![Alt Text][https://i.ibb.co/n3BZ9TG/house.webp]
+![Alt Text](https://i.ibb.co/n3BZ9TG/house.webp)
 
 
 
