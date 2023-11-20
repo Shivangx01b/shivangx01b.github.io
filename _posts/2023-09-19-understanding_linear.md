@@ -209,6 +209,101 @@ plt.show()
 ![Alt Text](https://i.ibb.co/3Wvc0Xb/preidict.png)
 
 
+##  Implementing Linear Regression in TensorFlow
+
+- Setting Up the Environment
+To begin working with TensorFlow, you first need to install it. TensorFlow can be easily installed using pip. Ensure you have Python installed on your system, and then run the following command:
+
+```bash
+pip install tensorflow
+```
+
+- Data Preparation
+For this implementation, we'll create a simple dataset representing house prices predicted based on size, bedrooms, age of the house. We'll use synthetic data for this example:
+
+```python
+# Dummy data
+# Features: size, bedrooms, age of the house
+features = np.array([[1200, 3, 20],
+                         [1500, 4, 15],
+                         [850, 2, 25],
+                         [950, 2, 30],
+                         [1700, 5, 10],
+                         [1300, 3, 22]], dtype=float)
+
+# Prices in $1000s
+prices = np.array([[200],
+                       [250],
+                       [180],
+                       [190],
+                       [300],
+                       [220]], dtype=float)
+```
+
+- Model Definition
+In TensorFlow, we use the Keras API to define a linear model. Keras provides a simple and intuitive way to build models in TensorFlow:
+
+```python
+from tensorflow import keras
+import numpy as np
+import matplotlib.pyplot as plt
+
+mean = features.mean(axis=0)
+std = features.std(axis=0)
+normalized_features = (features - mean) / std
+
+model = keras.Sequential([
+    keras.layers.Dense(1, input_shape=(3,))
+```
+
+- Loss and Optimizer
+For the loss function, we'll use Mean Squared Error (MSE), and for the optimizer, we'll use Stochastic Gradient Descent (SGD):
+
+```python
+from tensorflow.keras.optimizers import SGD
+
+sgd = SGD(learning_rate=0.01)
+model.compile(optimizer=sgd, loss='mean_squared_error')
+```
+
+- Training Loop
+Training the model in TensorFlow is streamlined using the fit method, which handles the training loop internally:
+
+```
+history = model.fit(normalized_features, prices, epochs=1000, verbose=0)
+```
+
+- Visualizing the Result
+After training, you can plot the original data points and the model's predictions to visualize how well your model has learned:
+
+```python
+plt.plot(range(num_epochs), train_losses, label='Training Loss')
+plt.xlabel('Epoch')
+plt.ylabel('Loss')
+plt.title('Training Loss Over Time')
+plt.legend()
+plt.show()
+```
+
+![Alt Text](https://i.ibb.co/58TqcJZ/loss.png)
+
+```python
+# Predictions
+predictions = model(normalized_features).detach().numpy()
+
+# Plotting the actual and predicted prices
+plt.scatter(np.arange(len(prices)), prices, label='Actual Prices')
+plt.scatter(np.arange(len(predictions)), predictions, label='Predicted Prices', color='red')
+plt.xlabel('House')
+plt.ylabel('Price (in $1000s)')
+plt.title('Actual vs Predicted House Prices')
+plt.legend()
+plt.show()
+```
+
+![Alt Text](https://i.ibb.co/3Wvc0Xb/preidict.png)
+
+
 ## Conclusion
 
 Summarizing Key Points
