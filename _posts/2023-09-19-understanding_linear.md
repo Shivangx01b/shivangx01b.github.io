@@ -44,7 +44,6 @@ author: shivangx01b
     
 - Conclusion
 
-- Additional Resources
 
 ## Introduction
 
@@ -98,7 +97,131 @@ Optimization: Gradient Descent
 Gradient descent is an optimization algorithm used to minimize the MSE in linear regression. It works by iteratively adjusting the parameters m and c to reduce the cost (MSE). The algorithm takes steps proportional to the negative of the gradient (or approximate gradient) of the function at the current point. If correctly implemented, it leads us to the minimum of the function, i.e., the best values of m and c for our linear model.
 
 
+## Implementing Linear Regression in PyTorch
 
+- Setting Up the Environment
+To get started with PyTorch, you need to install it in your Python environment. PyTorch can be installed via pip or conda, and you should choose the version compatible with your system and CUDA (if you're using GPU acceleration). For CPU-only installation, you can use the following pip command:
+
+```bash
+pip install torch torchvision
+```
+For specific installation instructions tailored to your system (including GPU support), visit the [PyTorch official website.](https://pytorch.org/get-started/locally/)
+
+- Data Preparation
+For this implementation, we'll create a simple dataset representing house prices predicted based on size, bedrooms, age of the house. We'll use synthetic data for this example:
+
+```python
+import torch
+
+# Dummy data
+# Features: size, bedrooms, age of the house
+features = torch.tensor([[1200, 3, 20],
+                         [1500, 4, 15],
+                         [850, 2, 25],
+                         [950, 2, 30],
+                         [1700, 5, 10],
+                         [1300, 3, 22]], dtype=torch.float32)
+
+# Prices in $1000s
+prices = torch.tensor([[200],
+                       [250],
+                       [180],
+                       [190],
+                       [300],
+                       [220]], dtype=torch.float32)
+```
+- Model Definition
+We'll define a simple linear regression model using torch.nn.Linear, which takes 3 inputs (size, bedrooms, age of the house) and give 1 output (Prices)
+
+```python
+# Creating a simple PyTorch model for predicting house prices
+class LinearHouseModel(nn.Module):
+    def __init__(self):
+        super(LinearHouseModel, self).__init__()
+        # Assuming house prices depend on 3 features
+        self.linear = nn.Linear(3, 1)
+
+    def forward(self, x):
+        return self.linear(x)
+
+# Creating a new model
+mean = features.mean(0, keepdim=True)
+std = features.std(0, unbiased=False, keepdim=True)
+normalized_features = (features - mean) / std
+model = LinearHouseModel()
+```
+
+- Loss and Optimizer
+The Mean Squared Error (MSE) loss is used as it's the most common loss function for regression problems. We'll use the Stochastic Gradient Descent (SGD) optimizer:
+
+```python
+criterion = nn.MSELoss()
+optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
+```
+
+- Training Loop
+The training process involves a forward pass to compute predictions and loss, followed by a backward pass to compute gradients and update the model parameters:
+
+```python
+# The model with the normalized data
+num_epochs = 1000
+train_losses = []
+for epoch in range(num_epochs):
+    # Forward pass
+    outputs = model(normalized_features)
+    loss = criterion(outputs, prices)
+
+    # Backward and optimize
+    optimizer.zero_grad()
+    loss.backward()
+    optimizer.step()
+
+    train_losses.append(loss.item())
+```
+- Visualizing the Result
+After training, you can plot the original data points and the model's predictions to visualize how well your model has learned:
+
+```python
+plt.plot(range(num_epochs), train_losses, label='Training Loss')
+plt.xlabel('Epoch')
+plt.ylabel('Loss')
+plt.title('Training Loss Over Time')
+plt.legend()
+plt.show()
+```
+
+![Alt Text](https://i.ibb.co/58TqcJZ/loss.png)
+
+```python
+# Predictions
+predictions = model(normalized_features).detach().numpy()
+
+# Plotting the actual and predicted prices
+plt.scatter(np.arange(len(prices)), prices, label='Actual Prices')
+plt.scatter(np.arange(len(predictions)), predictions, label='Predicted Prices', color='red')
+plt.xlabel('House')
+plt.ylabel('Price (in $1000s)')
+plt.title('Actual vs Predicted House Prices')
+plt.legend()
+plt.show()
+```
+
+![Alt Text](https://i.ibb.co/3Wvc0Xb/preidict.png)
+
+
+## Conclusion
+
+Summarizing Key Points
+In this comprehensive guide, we delved into the world of linear regression, one of the most fundamental algorithms in machine learning and predictive analytics. We started by exploring the mathematical foundations of linear regression, including the linear equation y = mx + c, the Mean Squared Error (MSE) as the cost function, and the gradient descent optimization method.
+
+We then transitioned to practical implementations, demonstrating how to build linear regression models in two of the leading machine learning frameworks: PyTorch and TensorFlow. Each framework was explored through the lens of a simple yet illustrative example: predicting house prices based on house size.
+
+Differences and Similarities in Implementation
+While PyTorch and TensorFlow both effectively handle linear regression tasks, their approaches and syntax exhibit some differences:
+
+PyTorch offers a more granular level of control with explicit training loops, making it a go-to choice for research and development where such flexibility is crucial.
+TensorFlow, particularly with its Keras API, provides a more high-level, streamlined approach, making it user-friendly, especially for beginners and in production environments.
+Despite these differences, both frameworks share core similarities, such as the use of tensors for data representation, backpropagation for learning, and a strong community support.
 
 
 
