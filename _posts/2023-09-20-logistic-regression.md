@@ -1,10 +1,10 @@
 ---
 date: 2023-09-20 22:55:45
 layout: post
-title: Understanding Linear Regression. Mathematical Foundations and Implementations in 
-image: https://i.ibb.co/fYqcFMh/f8d549f7-7525-4b0d-8f83-2f132740a6ba.webp
-optimized_image: https://i.ibb.co/fYqcFMh/f8d549f7-7525-4b0d-8f83-2f132740a6ba.webp
-category: Fine Tune
+title: Understanding Logistic Regression. Mathematical Foundations and Implementations in Pytorch
+image: https://i.ibb.co/wNCbVPj/logi.webp
+optimized_image: https://i.ibb.co/wNCbVPj/logi.webp
+category: Logistic Regression
 tags:
   - machine learning
   - Neural Network
