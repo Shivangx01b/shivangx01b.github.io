@@ -15,9 +15,6 @@ author: shivangx01b
 
 # Logistic Regression with PyTorch
 
-!!! tip "Run Jupyter Notebook"
-    You can run the code for this section in this [jupyter notebook link](https://github.com/ritchieng/deep-learning-wizard/blob/master/docs/deep_learning/practical_pytorch/pytorch_logistic_regression.ipynb).
-    
 ## About Logistic Regression
 
 ### Logistic Regression Basics
@@ -56,46 +53,47 @@ author: shivangx01b
     - **Linear regression**: minimize error between points and line
 
 
-!!! bug "Linear Regression Problem 1: Fever value can go negative (below 0) and positive (above 1)"
-    If you simply tried to do a simple linear regression on this fever problem, you would realize an apparent error. Fever can go beyond 1 and below 0 which does not make sense in this context.
-    ```python
-    import numpy as np
-    import matplotlib.pyplot as plt
-    %matplotlib inline
-    
-    x = [1, 5, 10, 10, 25, 50, 70, 75, 100,]
-    y = [0, 0, 0, 0, 0, 1, 1, 1, 1]
-    
-    colors = np.random.rand(len(x))
-    plt.plot(np.unique(x), np.poly1d(np.polyfit(x, y, 1))(np.unique(x)))
-    plt.ylabel("Fever")
-    plt.xlabel("Temperature")
-    
-    plt.scatter(x, y, c=colors, alpha=0.5)
-    plt.show()
-    ```
+**Note "Linear Regression Problem 1: Fever value can go negative (below 0) and positive (above 1)"**
+If you simply tried to do a simple linear regression on this fever problem, you would realize an apparent error. Fever can go beyond 1 and below 0 which does not make sense in this context.
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+%matplotlib inline
+
+x = [1, 5, 10, 10, 25, 50, 70, 75, 100,]
+y = [0, 0, 0, 0, 0, 1, 1, 1, 1]
+
+colors = np.random.rand(len(x))
+plt.plot(np.unique(x), np.poly1d(np.polyfit(x, y, 1))(np.unique(x)))
+plt.ylabel("Fever")
+plt.xlabel("Temperature")
+
+plt.scatter(x, y, c=colors, alpha=0.5)
+plt.show()
+```
     
     
     
 ![png](pytorch_logistic_regression_files/pytorch_logistic_regression_5_1.png)
 
-!!! bug "Linear Regression Problem 2: Fever points are not predicted with the presence of outliers"
-    Previously at least some points could be properly predicted. However, with the presence of outliers, everything goes wonky for simple linear regression, having no predictive capacity at all.
-    ```python
-    import numpy as np
-    import matplotlib.pyplot as plt
-    
-    x = [1, 5, 10, 10, 25, 50, 70, 75, 300]
-    y = [0, 0, 0, 0, 0, 1, 1, 1, 1]
-    
-    colors = np.random.rand(len(x))
-    plt.plot(np.unique(x), np.poly1d(np.polyfit(x, y, 1))(np.unique(x)))
-    plt.ylabel("Fever")
-    plt.xlabel("Temperature")
-    
-    plt.scatter(x, y, c=colors, alpha=0.5)
-    plt.show()
-    ```
+**Note "Linear Regression Problem 2: Fever points are not predicted with the presence of outliers"**
+Previously at least some points could be properly predicted. However, with the presence of outliers, everything goes wonky for simple linear regression, having no predictive capacity at all.
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+x = [1, 5, 10, 10, 25, 50, 70, 75, 300]
+y = [0, 0, 0, 0, 0, 1, 1, 1, 1]
+
+colors = np.random.rand(len(x))
+plt.plot(np.unique(x), np.poly1d(np.polyfit(x, y, 1))(np.unique(x)))
+plt.ylabel("Fever")
+plt.xlabel("Temperature")
+
+plt.scatter(x, y, c=colors, alpha=0.5)
+plt.show()
+```
 
 
 ![png](pytorch_logistic_regression_files/pytorch_logistic_regression_5_0.png)
@@ -141,15 +139,15 @@ author: shivangx01b
     - Similarly, $y_2$ and $y_3$ are approximately similar in values and they return similar probabilities.
 
 
-!!! bug "Softmax versus Soft(arg)max"
+**Note "Softmax versus Soft(arg)max"**
 
-    Do you know many researchers and anyone in deep learning in general use the term softmax when it should be soft(arg)max.
-    
-    This is because soft(arg)max returns the probability distribution over K classes, a vector. 
-    
-    However, softmax only returns the max! This means you will be getting a scalar value versus a probability distribution.
-    
-    According to my friend, Alfredo Canziani (postdoc in NYU under Yann Lecun), it was actually a mistake made in the original paper previously but it was too late because the term softmax was adopted. Full credits to him for this tip.
+Do you know many researchers and anyone in deep learning in general use the term softmax when it should be soft(arg)max.
+
+This is because soft(arg)max returns the probability distribution over K classes, a vector. 
+
+However, softmax only returns the max! This means you will be getting a scalar value versus a probability distribution.
+
+According to my friend, Alfredo Canziani (postdoc in NYU under Yann Lecun), it was actually a mistake made in the original paper previously but it was too late because the term softmax was adopted. Full credits to him for this tip.
      
 #### Cross Entropy Function D() for 2 Class
 - Take note that here, $S$ is our softmax outputs and $L$ are our labels
@@ -163,33 +161,34 @@ author: shivangx01b
             - $-log(S)$: less positive if $S \longrightarrow 1$
             - $-log(S)$: more positive if $S \longrightarrow 0$ (BIGGER LOSS)
 
-!!! note "Numerical example of bigger or small loss"
+**Note "Numerical example of bigger or small loss"**
     
-    You get a small error of 1e-5 if your label = 0 and your S is closer to 0 (very correct prediction).
-    ```python
+You get a small error of 1e-5 if your label = 0 and your S is closer to 0 (very correct prediction).
+```python
+
+import math
+print(-math.log(1 - 0.00001))
     
-    import math
-    print(-math.log(1 - 0.00001))
-       
-    ```
-    
-    You get a large error of 11.51 if your label is 0 and S is near to 1 (very wrong prediction).
-    ```python
-    
-    print(-math.log(1 - 0.99999)) 
-    ```
-    
-    You get a small error of -1e-5 if your label is 1 and S is near 1 (very correct prediction).
-    ```python
-    
-    print(-math.log(0.99999))
-    ```
-    
-    You get a big error of -11.51 if your label is 1 and S is near 0 (very wrong prediction).
-    ```python
-    
-    print(-math.log(0.00001))
-    ```
+```
+
+You get a large error of 11.51 if your label is 0 and S is near to 1 (very wrong prediction).
+```python
+
+print(-math.log(1 - 0.99999)) 
+```
+
+You get a small error of -1e-5 if your label is 1 and S is near 1 (very correct prediction).
+```python
+
+print(-math.log(0.99999))
+```
+
+You get a big error of -11.51 if your label is 1 and S is near 0 (very wrong prediction).
+```python
+
+print(-math.log(0.00001))
+```
+
 ```python
 1.0000050000287824e-05
 11.51292546497478
@@ -228,7 +227,7 @@ author: shivangx01b
 **Images from 1 to 9**
 
 
-!!! note "Inspect length of training dataset"
+note "Inspect length of training dataset"
     You can easily load MNIST dataset with PyTorch. Here we inspect the training set, where our algorithms will learn from, and you will discover it is made up of 60,000 images.
     ```python
     import torch
@@ -255,7 +254,7 @@ author: shivangx01b
 60000
 ```
 
-!!! note "Inspecting a single image"
+note "Inspecting a single image"
     So this is how a single image is represented in numbers. It's actually a 28 pixel x 28 pixel image which is why you would end up with this 28x28 matrix of numbers.
     ```python
     train_dataset[0]
@@ -380,7 +379,7 @@ author: shivangx01b
 
 ```
 
-!!! note "Inspecting a single data point in the training dataset"
+note "Inspecting a single data point in the training dataset"
     When you load MNIST dataset, each data point is actually a tuple containing the image matrix and the label.
     
     ```python
@@ -392,7 +391,7 @@ tuple
 ```
 
 
-!!! note "Inspecting training dataset first element of tuple"
+note "Inspecting training dataset first element of tuple"
     This means to access the image, you need to access the first element in the tuple.
     
     ```python
@@ -405,7 +404,7 @@ tuple
 torch.Size([1, 28, 28])
 ```
 
-!!! note "Inspecting training dataset second element of tuple"
+note "Inspecting training dataset second element of tuple"
     The second element actually represents the image's label. Meaning if the second element says 5, it means the 28x28 matrix of numbers represent a digit 5.
 
     ```python
@@ -420,7 +419,7 @@ tensor(5)
 #### Displaying MNIST
 
 
-!!! note "Verifying shape of MNIST image"
+note "Verifying shape of MNIST image"
     As mentioned, a single MNIST image is of the shape 28 pixel x 28 pixel.
     
     ```python
@@ -442,7 +441,7 @@ tensor(5)
 
     
 
-!!! note "Plot image of MNIST image"
+note "Plot image of MNIST image"
     ```python
     show_img = train_dataset[0][0].numpy().reshape(28, 28)
     ```
@@ -457,7 +456,7 @@ tensor(5)
 
 
 
-!!! note "Second element of tuple shows label"
+note "Second element of tuple shows label"
     As you would expect, the label is 5.
     ```python
     # Label
@@ -468,7 +467,7 @@ tensor(5)
 tensor(5)
 ```
 
-!!! note "Plot second image of MNIST image"
+note "Plot second image of MNIST image"
     
     ```python
     show_img = train_dataset[1][0].numpy().reshape(28, 28)
@@ -483,7 +482,7 @@ tensor(5)
 ![png](pytorch_logistic_regression_files/pytorch_logistic_regression_27_1.png)
 
 
-!!! note "Second element of tuple shows label"
+note "Second element of tuple shows label"
     We should see 0 here as the label.
     ```python
     # Label
@@ -498,7 +497,7 @@ tensor(0)
 - Out-of-sample
 
 
-!!! note "Load test dataset"
+note "Load test dataset"
     Compared to the 60k images in the training set, the testing set where the model will not be trained on has 10k images to check for its out-of-sample performance.
     ```python
     test_dataset = dsets.MNIST(root='./data', 
@@ -517,7 +516,7 @@ tensor(0)
 ```
 
     
-!!! note "Test dataset elements"
+note "Test dataset elements"
     Exactly like the training set, the testing set has 10k tuples containing the 28x28 matrices and their respective labels.
     ```python
     type(test_dataset[0])
@@ -527,7 +526,7 @@ tensor(0)
 tuple
 ```
 
-!!! note "Test dataset first element in tuple"
+note "Test dataset first element in tuple"
     This contains the image matrix, similar to the training set.
     ```python
     # Image matrix
@@ -540,7 +539,7 @@ torch.Size([1, 28, 28])
 ```
 
 
-!!! note "Plot image sample from test dataset"
+note "Plot image sample from test dataset"
     ```python
     show_img = test_dataset[0][0].numpy().reshape(28, 28)
     plt.imshow(show_img, cmap='gray')
@@ -549,7 +548,7 @@ torch.Size([1, 28, 28])
 ![png](pytorch_logistic_regression_files/pytorch_logistic_regression_34_1.png)
 
 
-!!! note "Test dataset second element in tuple"
+note "Test dataset second element in tuple"
     ```python
     # Label
     test_dataset[0][1]
@@ -572,7 +571,7 @@ tensor(7)
     
 
 
-!!! note "Recap training dataset"
+note "Recap training dataset"
     Remember training dataset has 60k images and testing dataset has 10k images.
     ```python
     len(train_dataset)
@@ -582,7 +581,7 @@ tensor(7)
 60000
 ```
 
-!!! note "Defining epochs"
+note "Defining epochs"
     When the model goes through the whole 60k images once, learning how to classify 0-9, it's consider 1 epoch. 
     
     However, there's a concept of batch size where it means the model would look at 100 images before updating the model's weights, thereby learning. When the model updates its weights (parameters) after looking at all the images, this is considered 1 iteration.
@@ -609,7 +608,7 @@ tensor(7)
 5
 ```
 
-!!! note "Create Iterable Object: Training Dataset"
+note "Create Iterable Object: Training Dataset"
 
     ```python
     train_loader = torch.utils.data.DataLoader(dataset=train_dataset, 
@@ -617,7 +616,7 @@ tensor(7)
                                                shuffle=True)
     ```
 
-!!! note "Check Iterability"
+note "Check Iterability"
     ```python
     import collections
     isinstance(train_loader, collections.Iterable)
@@ -627,7 +626,7 @@ tensor(7)
 True
 ```
 
-!!! note "Create Iterable Object: Testing Dataset"
+note "Create Iterable Object: Testing Dataset"
     ```python
     # Iterable object
     test_loader = torch.utils.data.DataLoader(dataset=test_dataset, 
@@ -635,7 +634,7 @@ True
                                               shuffle=False)
     ```
 
-!!! note "Check iterability of testing dataset"
+note "Check iterability of testing dataset"
     ```python
     isinstance(test_loader, collections.Iterable)
     ```
@@ -644,7 +643,7 @@ True
 True
 ```
 
-!!! note "Iterate through dataset"
+note "Iterate through dataset"
     This is just a simplified example of what we're doing above where we're creating an iterable object `lst` to loop through so we can access all the images `img_1` and `img_2`.
     
     Above, the equivalent of `lst` is `train_loader` and `test_loader`.
@@ -671,7 +670,7 @@ True
 ### Step 3: Building Model
 
 
-!!! note "Create model class"
+note "Create model class"
 
     ```python
     # Same as linear regression! 
@@ -692,7 +691,7 @@ True
 - Output dimension: 10
     - 0, 1, 2, 3, 4, 5, 6, 7, 8, 9
 
-!!! note "Check size of dataset"
+note "Check size of dataset"
     This should be 28x28.
     ```python
     # Size of images
@@ -704,7 +703,7 @@ True
 torch.Size([1, 28, 28])
 ```
 
-!!! note "Instantiate model class based on input and out dimensions"
+note "Instantiate model class based on input and out dimensions"
     
     As we're trying to classify digits 0-9 a total of 10 classes, our output dimension is 10. 
     
@@ -721,14 +720,14 @@ torch.Size([1, 28, 28])
     - _Linear Regression: MSE_
    
 
-!!! note "Create Cross Entry Loss Class"
+note "Create Cross Entry Loss Class"
     Unlike linear regression, we do not use MSE here, we need Cross Entry Loss to calculate our loss before we backpropagate and update our parameters.
     
     ```python
     criterion = nn.CrossEntropyLoss()  
     ```
 
-!!! alert "What happens in nn.CrossEntropyLoss()?"
+alert "What happens in nn.CrossEntropyLoss()?"
     It does 2 things at the same time. 
 
     <br /> 1. Computes softmax (logistic/softmax function)
@@ -747,7 +746,7 @@ torch.Size([1, 28, 28])
     - **At every iteration, we update our model's parameters**
 
 
-!!! note "Create optimizer"
+note "Create optimizer"
     Similar to what we've covered above, this calculates the parameters' gradients and update them subsequently.
     ```python
     learning_rate = 0.001
@@ -755,7 +754,7 @@ torch.Size([1, 28, 28])
     optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)  
     ```
 
-!!! note "Parameters In-Depth"
+note "Parameters In-Depth"
 
     You'll realize we have 2 sets of parameters, 10x784 which is A and 10x1 which is b in the $y = AX + b$ equation where X is our input of size 784.
     
@@ -785,7 +784,7 @@ torch.Size([10])
 
 
 
-!!! note "Quick Matrix Product Review"
+note "Quick Matrix Product Review"
     - Example 1: **matrix product**
         - $A: (100, 10)$
         - $B: (10, 1)$
@@ -803,7 +802,7 @@ torch.Size([10])
 
 ### Step 7: Train Model
 
-!!! note "7 step process for training models"
+note "7 step process for training models"
     - Process 
         1. Convert inputs/labels to tensors with gradients
         2. Clear gradient buffets
@@ -881,7 +880,7 @@ Iteration: 3000. Loss: 1.002761721611023. Accuracy: 82
 #### Break Down Accuracy Calculation
 
 
-!!! note "Printing outputs of our model"
+note "Printing outputs of our model"
     As we've trained our model, we can extract the accuracy calculation portion to understand what's happening without re-training the model.
     
     This would print out the output of the model's predictions on your notebook.
@@ -1103,7 +1102,7 @@ tensor([[-0.4181, -1.0784, -0.4840, -0.0985, -0.2394, -0.1801, -1.1639,
     
 
 
-!!! note "Printing output size"
+note "Printing output size"
     This produces a 100x10 matrix because each iteration has a batch size of 100 and each prediction across the 10 classes, with the largest number indicating the likely number it is predicting.
     ```python
     iter_test = 0
@@ -1124,7 +1123,7 @@ torch.Size([100, 10])
 
 
 
-!!! note "Printing one output"
+note "Printing one output"
     This would be a 1x10 matrix where the largest number is what the model thinks the image is. Here we can see that in the tensor, position 7 has the largest number, indicating the model thinks the image is 7.
     
     number 0: -0.4181
@@ -1149,7 +1148,7 @@ tensor([-0.4181, -1.0784, -0.4840, -0.0985, -0.2394, -0.1801, -1.1639,
          2.9352, -0.1552,  0.8852])
 ```
 
-!!! note "Printing prediction output"
+note "Printing prediction output"
     Because our output is of size 100 (our batch size), our prediction size would also of the size 100.
     
     ```python
@@ -1169,7 +1168,7 @@ PREDICTION
 torch.Size([100])
 ```
 
-!!! note "Print prediction value"
+note "Print prediction value"
     We are printing our prediction which as verified above, should be digit 7.
     
     ```python
@@ -1190,7 +1189,7 @@ tensor(7)
 ```
 
 
-!!! note "Print prediction, label and label size"
+note "Print prediction, label and label size"
     We are trying to show what we are predicting and the actual values. In this case, we're predicting the right value 7!
     
     ```python
@@ -1223,7 +1222,7 @@ tensor(7)
 ```
 
 
-!!! note "Print second prediction and ground truth"
+note "Print second prediction and ground truth"
     Again, the prediction is correct. Naturally, as our model is quite competent in this simple task.
     
     ```python
@@ -1257,7 +1256,7 @@ tensor(2)
 
 ```
 
-!!! note "Print accuracy"
+note "Print accuracy"
     Now we know what each object represents, we can understand how we arrived at our accuracy numbers.
     
     One last thing to note is that `correct.item()` has this syntax is because `correct` is a PyTorch tensor and to get the value to compute with `total` which is an integer, we need to do this.
@@ -1286,7 +1285,7 @@ tensor(2)
 82.94
 ```
 
-!!! note "Explanation of Python's .sum() function"
+note "Explanation of Python's .sum() function"
     Python's .sum() function allows you to do a comparison between two matrices and sum the ones that return `True` or in our case, those predictions that match actual labels (correct predictions).
     
     ```python
@@ -1321,7 +1320,7 @@ tensor(2)
 
 #### Saving Model
 
-!!! note "Saving PyTorch model"
+note "Saving PyTorch model"
     This is how you save your model. Feel free to just change `save_model = True` to save your model
     ```python
     save_model = False
@@ -1334,7 +1333,7 @@ tensor(2)
 
 
 
-!!! note "CPU version"
+note "CPU version"
     The usual 7-step process, getting repetitive by now which we like. 
     
     ```python
@@ -1473,7 +1472,7 @@ Iteration: 3000. Loss: 1.024120569229126. Accuracy: 82.49
 
 
 
-!!! note "GPU version"
+note "GPU version"
     
     2 things must be on GPU
     <br />- `model`
@@ -1636,7 +1635,7 @@ Iteration: 3000. Loss: 1.0359245538711548. Accuracy: 82.74
 ## Summary
 We've learnt to...
 
-!!! success
+success
     * [x] **Logistic regression** basics
     * [x] **Problems** of **linear regression**
     * [x] **In-depth** Logistic Regression
