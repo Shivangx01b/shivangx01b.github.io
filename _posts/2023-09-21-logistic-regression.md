@@ -1,5 +1,5 @@
 ---
-date: 2023-09-20 22:55:45
+date: 2023-09-21 22:55:45
 layout: post
 title: Understanding Logistic Regression, Maths and Implementations in PyTorch
 image: https://i.ibb.co/LzM2G6m/ce929365-2789-436a-bd70-7ed9a3a0c82c.webp
