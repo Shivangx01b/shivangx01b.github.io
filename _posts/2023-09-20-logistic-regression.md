@@ -13,177 +13,196 @@ tags:
 author: shivangx01b
 ---
 
+
 ## Logistic Regression Basics
 
 #### Classification algorithm
-- Example: Spam vs No Spam
-    - Input: Bunch of words
-    - Output: Probability spam or not
+
+*   Example: Spam vs No Spam
+    *   Input: Bunch of words
+    *   Output: Probability spam or not
 
 #### Basic Comparison
-- **Linear regression**
-    - Output: numeric value given inputs
-- **Logistic regression**:
-    - Output: probability [0, 1] given input belonging to a class
-    
+
+*   **Linear regression**
+    *   Output: numeric value given inputs
+*   **Logistic regression**:
+    *   Output: probability \[0, 1\] given input belonging to a class
+
 #### Input/Output Comparison
-- **Linear regression: Multiplication**
-    - Input: [1]
-        - Output: 2
-    - Input: [2]
-        - Output: 4
-    - Trying to model the relationship `y = 2x`
-- **Logistic regression: Spam**
-    - Input: "Sign up to get 1 million dollars by tonight"
-        - Output: p = 0.8
-    - Input: "This is a receipt for your recent purchase with Amazon"
-        - Output: p = 0.3
-    - **p: probability it is spam**
-        
+
+*   **Linear regression: Multiplication**
+    *   Input: \[1\]
+        *   Output: 2
+    *   Input: \[2\]
+        *   Output: 4
+    *   Trying to model the relationship `y = 2x`
+*   **Logistic regression: Spam**
+    *   Input: "Sign up to get 1 million dollars by tonight"
+        *   Output: p = 0.8
+    *   Input: "This is a receipt for your recent purchase with Amazon"
+        *   Output: p = 0.3
+    *   **p: probability it is spam**
+
 ### Problems of Linear Regression
-- Example
-    - Fever
-    - **Input**: temperature
-    - **Output**: fever or no fever
-- Remember
-    - **Linear regression**: minimize error between points and line
+
+*   Example
+    *   Fever
+    *   **Input**: temperature
+    *   **Output**: fever or no fever
+*   Remember
+    *   **Linear regression**: minimize error between points and line
+
+Linear Regression Problem 1: Fever value can go negative (below 0) and positive (above 1)
+
+If you simply tried to do a simple linear regression on this fever problem, you would realize an apparent error. Fever can go beyond 1 and below 0 which does not make sense in this context.
+
+```
+import numpy as np
+import matplotlib.pyplot as plt
+%matplotlib inline
+
+x = [1, 5, 10, 10, 25, 50, 70, 75, 100,]
+y = [0, 0, 0, 0, 0, 1, 1, 1, 1]
+
+colors = np.random.rand(len(x))
+plt.plot(np.unique(x), np.poly1d(np.polyfit(x, y, 1))(np.unique(x)))
+plt.ylabel("Fever")
+plt.xlabel("Temperature")
+
+plt.scatter(x, y, c=colors, alpha=0.5)
+plt.show()
+
+```
 
 
-!!! bug "Linear Regression Problem 1: Fever value can go negative (below 0) and positive (above 1)"
-    If you simply tried to do a simple linear regression on this fever problem, you would realize an apparent error. Fever can go beyond 1 and below 0 which does not make sense in this context.
-    ```python
-    import numpy as np
-    import matplotlib.pyplot as plt
-    %matplotlib inline
-    
-    x = [1, 5, 10, 10, 25, 50, 70, 75, 100,]
-    y = [0, 0, 0, 0, 0, 1, 1, 1, 1]
-    
-    colors = np.random.rand(len(x))
-    plt.plot(np.unique(x), np.poly1d(np.polyfit(x, y, 1))(np.unique(x)))
-    plt.ylabel("Fever")
-    plt.xlabel("Temperature")
-    
-    plt.scatter(x, y, c=colors, alpha=0.5)
-    plt.show()
-    ```
-    
-    
-    
-![png](pytorch_logistic_regression_files/pytorch_logistic_regression_5_1.png)
+![png](https://www.deeplearningwizard.com/deep_learning/practical_pytorch/pytorch_logistic_regression_files/pytorch_logistic_regression_5_1.png)
 
-!!! bug "Linear Regression Problem 2: Fever points are not predicted with the presence of outliers"
-    Previously at least some points could be properly predicted. However, with the presence of outliers, everything goes wonky for simple linear regression, having no predictive capacity at all.
-    ```python
-    import numpy as np
-    import matplotlib.pyplot as plt
-    
-    x = [1, 5, 10, 10, 25, 50, 70, 75, 300]
-    y = [0, 0, 0, 0, 0, 1, 1, 1, 1]
-    
-    colors = np.random.rand(len(x))
-    plt.plot(np.unique(x), np.poly1d(np.polyfit(x, y, 1))(np.unique(x)))
-    plt.ylabel("Fever")
-    plt.xlabel("Temperature")
-    
-    plt.scatter(x, y, c=colors, alpha=0.5)
-    plt.show()
-    ```
+Linear Regression Problem 2: Fever points are not predicted with the presence of outliers
+
+Previously at least some points could be properly predicted. However, with the presence of outliers, everything goes wonky for simple linear regression, having no predictive capacity at all.
+
+```
+import numpy as np
+import matplotlib.pyplot as plt
+
+x = [1, 5, 10, 10, 25, 50, 70, 75, 300]
+y = [0, 0, 0, 0, 0, 1, 1, 1, 1]
+
+colors = np.random.rand(len(x))
+plt.plot(np.unique(x), np.poly1d(np.polyfit(x, y, 1))(np.unique(x)))
+plt.ylabel("Fever")
+plt.xlabel("Temperature")
+
+plt.scatter(x, y, c=colors, alpha=0.5)
+plt.show()
+
+```
 
 
-![png](pytorch_logistic_regression_files/pytorch_logistic_regression_5_0.png)
-
+![png](https://www.deeplearningwizard.com/deep_learning/practical_pytorch/pytorch_logistic_regression_files/pytorch_logistic_regression_5_0.png)
 
 ### Logistic Regression In-Depth
 
 #### Predicting Probability
-- Linear regression doesn't work
-- Instead of predicting direct values: **predict probability**
 
-![](./images/cross_entropy_final_4.png)
+*   Linear regression doesn't work
+*   Instead of predicting direct values: **predict probability**
+
+![](https://www.deeplearningwizard.com/deep_learning/practical_pytorch/images/cross_entropy_final_4.png)
 
 #### Logistic Function g()
-- **"Two-class logistic regression"**
-- $\boldsymbol{y} = A\boldsymbol{x} + \boldsymbol{b}$
-    - Where $\boldsymbol{y}$ is a vector comprising the 2-class prediction $y_0$ and $y_1$
-    - Where the labels are $y_0 = 0$  and $y_1 = 1$
-    - Also, it's bolded because it's a vector, not a matrix.
-- $g(y_1) = \frac {1} {1 + e^{-y_1}}$
-    - $g(y_1)$ = Estimated probability that $y = 1$
-- $g(y_0) = 1 - g(y_1)$
-    - $g(y_0)$ = Estimated probability that $y = 0$
-- For our illustration above, we have 4 classes, so we have to use softmax function explained below
+
+*   **"Two-class logistic regression"**
+*   \\(\\boldsymbol{y} = A\\boldsymbol{x} + \\boldsymbol{b}\\)
+    *   Where \\(\\boldsymbol{y}\\) is a vector comprising the 2-class prediction \\(y\_0\\) and \\(y\_1\\)
+    *   Where the labels are \\(y\_0 = 0\\) and \\(y\_1 = 1\\)
+    *   Also, it's bolded because it's a vector, not a matrix.
+*   \\(g(y\_1) = \\frac {1} {1 + e^{-y\_1}}\\)
+    *   \\(g(y\_1)\\) = Estimated probability that \\(y = 1\\)
+*   \\(g(y\_0) = 1 - g(y\_1)\\)
+    *   \\(g(y\_0)\\) = Estimated probability that \\(y = 0\\)
+*   For our illustration above, we have 4 classes, so we have to use softmax function explained below
 
 #### Softmax Function g()
-- **"Multi-class logistic regression"**
-    - Generalization of logistic function, where you can derive back to the logistic function if you've a 2 class classification problem
-    - Here, we will use a 4 class example (K = 4) as shown above to be very clear in how it relates back to that simple examaple.
-- $\boldsymbol{y} = A\boldsymbol{x} + \boldsymbol{b}$
-    - Where $\boldsymbol{y}$ is a vector comprising the 4-class prediction $y_0, y_1, y_2, y_3$
-    - Where the 4 labels (K = 4) are $y_0 = 0, y_1 = 1, y_2 = 2, y_3 = 3$
-- $g(y_i) = \frac {e^{y_i} } {\sum^K_i e^{y_i}}$ where K = 4 because we have 4 classes
-    - To put numbers to this equation in relation to the illustration above where we've $y_0 = 1.3, y_1 = 1.2, y = 4.5, y = 4.8$
-        - $g(y_0) = \frac {e^{1.3}}{e^{1.3} + e^{1.2} + e^{4.5} + e^{4.8}} = 0.017$
-        - $g(y_1) = \frac {e^{1.2}}{e^{1.3} + e^{1.2} + e^{4.5} + e^{4.8}} = 0.015$
-        - $g(y_2) = \frac {e^{4.5}}{e^{1.3} + e^{1.2} + e^{4.5} + e^{4.8}} = 0.412$
-        - $g(y_3) = \frac {e^{4.8}}{e^{1.3} + e^{1.2} + e^{4.5} + e^{4.8}} = 0.556$
-        - $g(y_0) + g(y_1) + g(y_2) + g(y_3) = 1.0$
-        - All softmax outputs have to sum to one as they represent a probability distribution over K classes. 
-- Take note how these numbers are not exactly as in the illustration in the softmax box but the concept is important (intentionally made so).
-    - $y_0$ and $y_1$ are approximately similar in values and they return similar probabilities.
-    - Similarly, $y_2$ and $y_3$ are approximately similar in values and they return similar probabilities.
 
+*   **"Multi-class logistic regression"**
+    *   Generalization of logistic function, where you can derive back to the logistic function if you've a 2 class classification problem
+    *   Here, we will use a 4 class example (K = 4) as shown above to be very clear in how it relates back to that simple examaple.
+*   \\(\\boldsymbol{y} = A\\boldsymbol{x} + \\boldsymbol{b}\\)
+    *   Where \\(\\boldsymbol{y}\\) is a vector comprising the 4-class prediction \\(y\_0, y\_1, y\_2, y\_3\\)
+    *   Where the 4 labels (K = 4) are \\(y\_0 = 0, y\_1 = 1, y\_2 = 2, y\_3 = 3\\)
+*   \\(g(y\_i) = \\frac {e^{y\_i} } {\\sum^K\_i e^{y\_i}}\\) where K = 4 because we have 4 classes
+    *   To put numbers to this equation in relation to the illustration above where we've \\(y\_0 = 1.3, y\_1 = 1.2, y = 4.5, y = 4.8\\)
+        *   \\(g(y\_0) = \\frac {e^{1.3}}{e^{1.3} + e^{1.2} + e^{4.5} + e^{4.8}} = 0.017\\)
+        *   \\(g(y\_1) = \\frac {e^{1.2}}{e^{1.3} + e^{1.2} + e^{4.5} + e^{4.8}} = 0.015\\)
+        *   \\(g(y\_2) = \\frac {e^{4.5}}{e^{1.3} + e^{1.2} + e^{4.5} + e^{4.8}} = 0.412\\)
+        *   \\(g(y\_3) = \\frac {e^{4.8}}{e^{1.3} + e^{1.2} + e^{4.5} + e^{4.8}} = 0.556\\)
+        *   \\(g(y\_0) + g(y\_1) + g(y\_2) + g(y\_3) = 1.0\\)
+        *   All softmax outputs have to sum to one as they represent a probability distribution over K classes.
+*   Take note how these numbers are not exactly as in the illustration in the softmax box but the concept is important (intentionally made so).
+    *   \\(y\_0\\) and \\(y\_1\\) are approximately similar in values and they return similar probabilities.
+    *   Similarly, \\(y\_2\\) and \\(y\_3\\) are approximately similar in values and they return similar probabilities.
 
-!!! bug "Softmax versus Soft(arg)max"
+Softmax versus Soft(arg)max
 
-    Do you know many researchers and anyone in deep learning in general use the term softmax when it should be soft(arg)max.
-    
-    This is because soft(arg)max returns the probability distribution over K classes, a vector. 
-    
-    However, softmax only returns the max! This means you will be getting a scalar value versus a probability distribution.
-    
-    According to my friend, Alfredo Canziani (postdoc in NYU under Yann Lecun), it was actually a mistake made in the original paper previously but it was too late because the term softmax was adopted. Full credits to him for this tip.
-     
+Do you know many researchers and anyone in deep learning in general use the term softmax when it should be soft(arg)max.
+
+This is because soft(arg)max returns the probability distribution over K classes, a vector.
+
+However, softmax only returns the max! This means you will be getting a scalar value versus a probability distribution.
+
+According to my friend, Alfredo Canziani (postdoc in NYU under Yann Lecun), it was actually a mistake made in the original paper previously but it was too late because the term softmax was adopted. Full credits to him for this tip.
+
 #### Cross Entropy Function D() for 2 Class
-- Take note that here, $S$ is our softmax outputs and $L$ are our labels
-- $D(S, L) = -(L log S + (1-L)log(1-S))$
-    - If L = 0 (label)
-        - $D(S, 0) = - log(1-S)$
-            - $- log(1-S)$: less positive if $S \longrightarrow 0$
-            - $- log(1-S)$: more positive if $S \longrightarrow 1$ (BIGGER LOSS)
-    - If L = 1 (label)
-        - $D(S, 1) = - log S$
-            - $-log(S)$: less positive if $S \longrightarrow 1$
-            - $-log(S)$: more positive if $S \longrightarrow 0$ (BIGGER LOSS)
 
-!!! note "Numerical example of bigger or small loss"
-    
-    You get a small error of 1e-5 if your label = 0 and your S is closer to 0 (very correct prediction).
-    ```python
-    
-    import math
-    print(-math.log(1 - 0.00001))
-       
-    ```
-    
-    You get a large error of 11.51 if your label is 0 and S is near to 1 (very wrong prediction).
-    ```python
-    
-    print(-math.log(1 - 0.99999)) 
-    ```
-    
-    You get a small error of -1e-5 if your label is 1 and S is near 1 (very correct prediction).
-    ```python
-    
-    print(-math.log(0.99999))
-    ```
-    
-    You get a big error of -11.51 if your label is 1 and S is near 0 (very wrong prediction).
-    ```python
-    
-    print(-math.log(0.00001))
-    ```
-```python
+*   Take note that here, \\(S\\) is our softmax outputs and \\(L\\) are our labels
+*   \\(D(S, L) = -(L log S + (1-L)log(1-S))\\)
+    *   If L = 0 (label)
+        *   \\(D(S, 0) = - log(1-S)\\)
+            *   \\(- log(1-S)\\): less positive if \\(S \\longrightarrow 0\\)
+            *   \\(- log(1-S)\\): more positive if \\(S \\longrightarrow 1\\) (BIGGER LOSS)
+    *   If L = 1 (label)
+        *   \\(D(S, 1) = - log S\\)
+            *   \\(-log(S)\\): less positive if \\(S \\longrightarrow 1\\)
+            *   \\(-log(S)\\): more positive if \\(S \\longrightarrow 0\\) (BIGGER LOSS)
+
+Numerical example of bigger or small loss
+
+You get a small error of 1e-5 if your label = 0 and your S is closer to 0 (very correct prediction).
+
+```
+import math
+print(-math.log(1 - 0.00001))
+
+```
+
+
+You get a large error of 11.51 if your label is 0 and S is near to 1 (very wrong prediction).
+
+```
+print(-math.log(1 - 0.99999)) 
+
+```
+
+
+You get a small error of -1e-5 if your label is 1 and S is near 1 (very correct prediction).
+
+```
+print(-math.log(0.99999))
+
+```
+
+
+You get a big error of -11.51 if your label is 1 and S is near 0 (very wrong prediction).
+
+```
+print(-math.log(0.00001))
+
+```
+
+
+```
 1.0000050000287824e-05
 11.51292546497478
 1.0000050000287824e-05
@@ -191,72 +210,69 @@ author: shivangx01b
 
 ```
 
+
 #### Cross Entropy Function D() for More Than 2 Class
-- For the case where we have more than 2 class, we need a more generalized function
-- $D(S, L) = - \sum^K_1 L_i log(S_i)$
-    - $K$: number of classes
-    - $L_i$: label of i-th class, 1 if that's the class else 0
-    - $S_i$: output of softmax for i-th class
+
+*   For the case where we have more than 2 class, we need a more generalized function
+*   \\(D(S, L) = - \\sum^K\_1 L\_i log(S\_i)\\)
+    *   \\(K\\): number of classes
+    *   \\(L\_i\\): label of i-th class, 1 if that's the class else 0
+    *   \\(S\_i\\): output of softmax for i-th class
 
 #### Cross Entropy Loss over N samples
-- Goal: Minimizing Cross Entropy Loss, L
-- $Loss = \frac {1}{N} \sum_j^N D_j$
-    - $D_j$: j-th sample of cross entropy function $D(S, L)$
-    - $N$: number of samples
-    - $Loss$: average cross entropy loss over N samples
 
-## Building a Logistic Regression Model with PyTorch
-![](./images/lr2.png)
+*   Goal: Minimizing Cross Entropy Loss, L
+*   \\(Loss = \\frac {1}{N} \\sum\_j^N D\_j\\)
+    *   \\(D\_j\\): j-th sample of cross entropy function \\(D(S, L)\\)
+    *   \\(N\\): number of samples
+    *   \\(Loss\\): average cross entropy loss over N samples
+
+Building a Logistic Regression Model with PyTorch
+-------------------------------------------------------------------------------------------------------------------------
+
+![](https://www.deeplearningwizard.com/deep_learning/practical_pytorch/images/lr2.png)
 
 ### Steps
-- Step 1: Load Dataset
-- Step 2: Make Dataset Iterable
-- Step 3: Create Model Class
-- Step 4: Instantiate Model Class
-- Step 5: Instantiate Loss Class
-- Step 6: Instantiate Optimizer Class
-- Step 7: Train Model
+
+*   Step 1: Load Dataset
+*   Step 2: Make Dataset Iterable
+*   Step 3: Create Model Class
+*   Step 4: Instantiate Model Class
+*   Step 5: Instantiate Loss Class
+*   Step 6: Instantiate Optimizer Class
+*   Step 7: Train Model
 
 ### Step 1a: Loading MNIST Train Dataset
+
 **Images from 1 to 9**
 
+Inspect length of training dataset
 
-!!! note "Inspect length of training dataset"
-    You can easily load MNIST dataset with PyTorch. Here we inspect the training set, where our algorithms will learn from, and you will discover it is made up of 60,000 images.
-    ```python
-    import torch
-    import torch.nn as nn
-    import torchvision.transforms as transforms
-    import torchvision.datasets as dsets
-    ```
-    
-    
-    ```python
-    train_dataset = dsets.MNIST(root='./data', 
-                                train=True, 
-                                transform=transforms.ToTensor(),
-                                download=True)
-    ```
-    
-    
-    ```python
-    len(train_dataset)
-    ```
+You can easily load MNIST dataset with PyTorch. Here we inspect the training set, where our algorithms will learn from, and you will discover it is made up of 60,000 images.
 
+```
+import torch
+import torch.nn as nn
+import torchvision.transforms as transforms
+import torchvision.datasets as dsets
 
-```python
-60000
 ```
 
-!!! note "Inspecting a single image"
-    So this is how a single image is represented in numbers. It's actually a 28 pixel x 28 pixel image which is why you would end up with this 28x28 matrix of numbers.
-    ```python
-    train_dataset[0]
-    ```
 
-```python
+```
+train_dataset = dsets.MNIST(root='./data', 
+                            train=True, 
+                            transform=transforms.ToTensor(),
+                            download=True)
+
+```
 
 
+Inspecting a single image
+
+So this is how a single image is represented in numbers. It's actually a 28 pixel x 28 pixel image which is why you would end up with this 28x28 matrix of numbers.
+
+```
 (tensor([[[ 0.0000,  0.0000,  0.0000,  0.0000,  0.0000,  0.0000,  0.0000,
             0.0000,  0.0000,  0.0000,  0.0000,  0.0000,  0.0000,  0.0000,
             0.0000,  0.0000,  0.0000,  0.0000,  0.0000,  0.0000,  0.0000,
@@ -373,402 +389,384 @@ author: shivangx01b
 
 ```
 
-!!! note "Inspecting a single data point in the training dataset"
-    When you load MNIST dataset, each data point is actually a tuple containing the image matrix and the label.
-    
-    ```python
-    type(train_dataset[0])
-    ```
 
-```python
-tuple
+Inspecting a single data point in the training dataset
+
+When you load MNIST dataset, each data point is actually a tuple containing the image matrix and the label.
+
+Inspecting training dataset first element of tuple
+
+This means to access the image, you need to access the first element in the tuple.
+
+```
+# Input Matrix
+train_dataset[0][0].size()
+
 ```
 
 
-!!! note "Inspecting training dataset first element of tuple"
-    This means to access the image, you need to access the first element in the tuple.
-    
-    ```python
-    # Input Matrix
-    train_dataset[0][0].size()
-    ```
-
-```python
+```
 # A 28x28 sized image of a digit
 torch.Size([1, 28, 28])
+
 ```
 
-!!! note "Inspecting training dataset second element of tuple"
-    The second element actually represents the image's label. Meaning if the second element says 5, it means the 28x28 matrix of numbers represent a digit 5.
 
-    ```python
-    # Label
-    train_dataset[0][1]
-    ```
+Inspecting training dataset second element of tuple
 
-```python
-tensor(5)
+The second element actually represents the image's label. Meaning if the second element says 5, it means the 28x28 matrix of numbers represent a digit 5.
+
 ```
+# Label
+train_dataset[0][1]
+
+```
+
 
 #### Displaying MNIST
 
+Verifying shape of MNIST image
 
-!!! note "Verifying shape of MNIST image"
-    As mentioned, a single MNIST image is of the shape 28 pixel x 28 pixel.
-    
-    ```python
-    import matplotlib.pyplot as plt
-    %matplotlib inline  
-    import numpy as np
-    ```
-    
-    
-    ```python
-    train_dataset[0][0].numpy().shape
-    ```
+As mentioned, a single MNIST image is of the shape 28 pixel x 28 pixel.
 
-
-```python
-(1, 28, 28)
+```
+import matplotlib.pyplot as plt
+%matplotlib inline  
+import numpy as np
 
 ```
 
-    
 
-!!! note "Plot image of MNIST image"
-    ```python
-    show_img = train_dataset[0][0].numpy().reshape(28, 28)
-    ```
-    
-    
-    ```python
-    plt.imshow(show_img, cmap='gray')
-    ```
+```
+train_dataset[0][0].numpy().shape
 
-
-![png](pytorch_logistic_regression_files/pytorch_logistic_regression_24_1.png)
-
-
-
-!!! note "Second element of tuple shows label"
-    As you would expect, the label is 5.
-    ```python
-    # Label
-    train_dataset[0][1]
-    ```
-    
-```python
-tensor(5)
 ```
 
-!!! note "Plot second image of MNIST image"
-    
-    ```python
-    show_img = train_dataset[1][0].numpy().reshape(28, 28)
-    ```
-    
-    
-    ```python
-    plt.imshow(show_img, cmap='gray')
-    ```
 
+Plot image of MNIST image
 
-![png](pytorch_logistic_regression_files/pytorch_logistic_regression_27_1.png)
-
-
-!!! note "Second element of tuple shows label"
-    We should see 0 here as the label.
-    ```python
-    # Label
-    train_dataset[1][1]
-    ```
-```python
-tensor(0)
 ```
+show_img = train_dataset[0][0].numpy().reshape(28, 28)
+
+```
+
+
+```
+plt.imshow(show_img, cmap='gray')
+
+```
+
+
+![png](https://www.deeplearningwizard.com/deep_learning/practical_pytorch/pytorch_logistic_regression_files/pytorch_logistic_regression_24_1.png)
+
+Second element of tuple shows label
+
+As you would expect, the label is 5.
+
+```
+# Label
+train_dataset[0][1]
+
+```
+
+
+Plot second image of MNIST image
+
+```
+show_img = train_dataset[1][0].numpy().reshape(28, 28)
+
+```
+
+
+```
+plt.imshow(show_img, cmap='gray')
+
+```
+
+
+![png](https://www.deeplearningwizard.com/deep_learning/practical_pytorch/pytorch_logistic_regression_files/pytorch_logistic_regression_27_1.png)
+
+Second element of tuple shows label
+
+We should see 0 here as the label.
+
+```
+# Label
+train_dataset[1][1]
+
+```
+
 
 ### Step 1b: Loading MNIST Test Dataset
-- Show our algorithm works beyond the data we have trained on.
-- Out-of-sample
 
+*   Show our algorithm works beyond the data we have trained on.
+*   Out-of-sample
 
-!!! note "Load test dataset"
-    Compared to the 60k images in the training set, the testing set where the model will not be trained on has 10k images to check for its out-of-sample performance.
-    ```python
-    test_dataset = dsets.MNIST(root='./data', 
-                               train=False, 
-                               transform=transforms.ToTensor())
-    ```
-    
-    
-    ```python
-    len(test_dataset)
-    ```
+Load test dataset
 
+Compared to the 60k images in the training set, the testing set where the model will not be trained on has 10k images to check for its out-of-sample performance.
 
-```python
-10000
 ```
+test_dataset = dsets.MNIST(root='./data', 
+                           train=False, 
+                           transform=transforms.ToTensor())
 
-    
-!!! note "Test dataset elements"
-    Exactly like the training set, the testing set has 10k tuples containing the 28x28 matrices and their respective labels.
-    ```python
-    type(test_dataset[0])
-    ```
-
-```python
-tuple
-```
-
-!!! note "Test dataset first element in tuple"
-    This contains the image matrix, similar to the training set.
-    ```python
-    # Image matrix
-    test_dataset[0][0].size()
-    ```
-
-
-```python
-torch.Size([1, 28, 28])
 ```
 
 
-!!! note "Plot image sample from test dataset"
-    ```python
-    show_img = test_dataset[0][0].numpy().reshape(28, 28)
-    plt.imshow(show_img, cmap='gray')
-    ```
+Test dataset elements
 
-![png](pytorch_logistic_regression_files/pytorch_logistic_regression_34_1.png)
+Exactly like the training set, the testing set has 10k tuples containing the 28x28 matrices and their respective labels.
 
+Test dataset first element in tuple
 
-!!! note "Test dataset second element in tuple"
-    ```python
-    # Label
-    test_dataset[0][1]
-    ```
-    
-```python
-tensor(7)
+This contains the image matrix, similar to the training set.
+
 ```
+# Image matrix
+test_dataset[0][0].size()
+
+```
+
+
+Plot image sample from test dataset
+
+```
+show_img = test_dataset[0][0].numpy().reshape(28, 28)
+plt.imshow(show_img, cmap='gray')
+
+```
+
+
+![png](https://www.deeplearningwizard.com/deep_learning/practical_pytorch/pytorch_logistic_regression_files/pytorch_logistic_regression_34_1.png)
+
+Test dataset second element in tuple
+
+```
+# Label
+test_dataset[0][1]
+
+```
+
 
 ### Step 2: Make Dataset Iterable
-- Aim: make the dataset iterable
-- **totaldata**: 60000
-- **minibatch**: 100
-    - Number of examples in 1 iteration
-- **iterations**: 3000
-    - 1 iteration: one mini-batch forward & backward pass
-- **epochs**
-    - 1 epoch: running through the whole dataset once
-    - $epochs = iterations \div \frac{totaldata}{minibatch} = 3000 \div \frac{60000}{100} = 5$
-    
 
+*   Aim: make the dataset iterable
+*   **totaldata**: 60000
+*   **minibatch**: 100
+    *   Number of examples in 1 iteration
+*   **iterations**: 3000
+    *   1 iteration: one mini-batch forward & backward pass
+*   **epochs**
+    *   1 epoch: running through the whole dataset once
+    *   \\(epochs = iterations \\div \\frac{totaldata}{minibatch} = 3000 \\div \\frac{60000}{100} = 5\\)
 
-!!! note "Recap training dataset"
-    Remember training dataset has 60k images and testing dataset has 10k images.
-    ```python
-    len(train_dataset)
-    ```
+Recap training dataset
 
-```python
-60000
+Remember training dataset has 60k images and testing dataset has 10k images.
+
+Defining epochs
+
+When the model goes through the whole 60k images once, learning how to classify 0-9, it's consider 1 epoch.
+
+However, there's a concept of batch size where it means the model would look at 100 images before updating the model's weights, thereby learning. When the model updates its weights (parameters) after looking at all the images, this is considered 1 iteration.
+
+We arbitrarily set 3000 iterations here which means the model would update 3000 times.
+
+One epoch consists of 60,000 / 100 = 600 iterations. Because we would like to go through 3000 iterations, this implies we would have 3000 / 600 = 5 epochs as each epoch has 600 iterations.
+
+```
+num_epochs = n_iters / (len(train_dataset) / batch_size)
+num_epochs = int(num_epochs)
+num_epochs
+
 ```
 
-!!! note "Defining epochs"
-    When the model goes through the whole 60k images once, learning how to classify 0-9, it's consider 1 epoch. 
-    
-    However, there's a concept of batch size where it means the model would look at 100 images before updating the model's weights, thereby learning. When the model updates its weights (parameters) after looking at all the images, this is considered 1 iteration.
-    
-    ```python
-    batch_size = 100
-    ```
-    
-    We arbitrarily set 3000 iterations here which means the model would update 3000 times.
-    ```python
-    n_iters = 3000
-    ```
-    
-    One epoch consists of 60,000 / 100 = 600 iterations. Because we would like to go through 3000 iterations, this implies we would have 3000 / 600 = 5 epochs as each epoch has 600 iterations. 
-    
-    ```python
-    num_epochs = n_iters / (len(train_dataset) / batch_size)
-    num_epochs = int(num_epochs)
-    num_epochs
-    ```
 
+Create Iterable Object: Training Dataset
 
-```python
-5
+```
+train_loader = torch.utils.data.DataLoader(dataset=train_dataset, 
+                                           batch_size=batch_size, 
+                                           shuffle=True)
+
 ```
 
-!!! note "Create Iterable Object: Training Dataset"
 
-    ```python
-    train_loader = torch.utils.data.DataLoader(dataset=train_dataset, 
-                                               batch_size=batch_size, 
-                                               shuffle=True)
-    ```
+Check Iterability
 
-!!! note "Check Iterability"
-    ```python
-    import collections
-    isinstance(train_loader, collections.Iterable)
-    ```
-    
-```python
-True
+```
+import collections
+isinstance(train_loader, collections.Iterable)
+
 ```
 
-!!! note "Create Iterable Object: Testing Dataset"
-    ```python
-    # Iterable object
-    test_loader = torch.utils.data.DataLoader(dataset=test_dataset, 
-                                              batch_size=batch_size, 
-                                              shuffle=False)
-    ```
 
-!!! note "Check iterability of testing dataset"
-    ```python
-    isinstance(test_loader, collections.Iterable)
-    ```
+Create Iterable Object: Testing Dataset
 
-```python
-True
+```
+# Iterable object
+test_loader = torch.utils.data.DataLoader(dataset=test_dataset, 
+                                          batch_size=batch_size, 
+                                          shuffle=False)
+
 ```
 
-!!! note "Iterate through dataset"
-    This is just a simplified example of what we're doing above where we're creating an iterable object `lst` to loop through so we can access all the images `img_1` and `img_2`.
-    
-    Above, the equivalent of `lst` is `train_loader` and `test_loader`.
-    
-    ```python
-    img_1 = np.ones((28, 28))
-    img_2 = np.ones((28, 28))
-    lst = [img_1, img_2]
-    ```
-    
-    
-    ```python
-    # Need to iterate
-    # Think of numbers as the images
-    for i in lst:
-        print(i.shape)
-    ```
 
-```python
-(28, 28)
-(28, 28)
+Check iterability of testing dataset
+
 ```
+isinstance(test_loader, collections.Iterable)
+
+```
+
+
+Iterate through dataset
+
+This is just a simplified example of what we're doing above where we're creating an iterable object `lst` to loop through so we can access all the images `img_1` and `img_2`.
+
+Above, the equivalent of `lst` is `train_loader` and `test_loader`.
+
+```
+img_1 = np.ones((28, 28))
+img_2 = np.ones((28, 28))
+lst = [img_1, img_2]
+
+```
+
+
+```
+# Need to iterate
+# Think of numbers as the images
+for i in lst:
+    print(i.shape)
+
+```
+
 
 ### Step 3: Building Model
 
+Create model class
 
-!!! note "Create model class"
+```
+# Same as linear regression! 
+class LogisticRegressionModel(nn.Module):
+    def __init__(self, input_dim, output_dim):
+        super(LogisticRegressionModel, self).__init__()
+        self.linear = nn.Linear(input_dim, output_dim)
 
-    ```python
-    # Same as linear regression! 
-    class LogisticRegressionModel(nn.Module):
-        def __init__(self, input_dim, output_dim):
-            super(LogisticRegressionModel, self).__init__()
-            self.linear = nn.Linear(input_dim, output_dim)
-        
-        def forward(self, x):
-            out = self.linear(x)
-            return out
-    ```
+    def forward(self, x):
+        out = self.linear(x)
+        return out
 
-### Step 4: Instantiate Model Class
-- Input dimension: 
-    - Size of image
-    - $28 \times 28 = 784$
-- Output dimension: 10
-    - 0, 1, 2, 3, 4, 5, 6, 7, 8, 9
-
-!!! note "Check size of dataset"
-    This should be 28x28.
-    ```python
-    # Size of images
-    train_dataset[0][0].size()
-    ```
-
-
-```python
-torch.Size([1, 28, 28])
 ```
 
-!!! note "Instantiate model class based on input and out dimensions"
-    
-    As we're trying to classify digits 0-9 a total of 10 classes, our output dimension is 10. 
-    
-    And we're feeding the model with 28x28 images, hence our input dimension is 28x28.
-    ```python
-    input_dim = 28*28
-    output_dim = 10
-    
-    model = LogisticRegressionModel(input_dim, output_dim)
-    ```
+
+### Step 4: Instantiate Model Class
+
+*   Input dimension:
+    *   Size of image
+    *   \\(28 \\times 28 = 784\\)
+*   Output dimension: 10
+    *   0, 1, 2, 3, 4, 5, 6, 7, 8, 9
+
+Check size of dataset
+
+This should be 28x28.
+
+```
+# Size of images
+train_dataset[0][0].size()
+
+```
+
+
+Instantiate model class based on input and out dimensions
+
+As we're trying to classify digits 0-9 a total of 10 classes, our output dimension is 10.
+
+And we're feeding the model with 28x28 images, hence our input dimension is 28x28.
+
+```
+input_dim = 28*28
+output_dim = 10
+
+model = LogisticRegressionModel(input_dim, output_dim)
+
+```
+
 
 ### Step 5: Instantiate Loss Class
-- **Logistic Regression**: Cross Entropy Loss
-    - _Linear Regression: MSE_
-   
 
-!!! note "Create Cross Entry Loss Class"
-    Unlike linear regression, we do not use MSE here, we need Cross Entry Loss to calculate our loss before we backpropagate and update our parameters.
-    
-    ```python
-    criterion = nn.CrossEntropyLoss()  
-    ```
+*   **Logistic Regression**: Cross Entropy Loss
+    *   _Linear Regression: MSE_
 
-!!! alert "What happens in nn.CrossEntropyLoss()?"
-    It does 2 things at the same time. 
+Create Cross Entry Loss Class
 
-    <br /> 1. Computes softmax (logistic/softmax function)
-    <br /> 2. Computes cross entropy
+Unlike linear regression, we do not use MSE here, we need Cross Entry Loss to calculate our loss before we backpropagate and update our parameters.
 
-![](./images/cross_entropy_final_4.png)
+```
+criterion = nn.CrossEntropyLoss()  
+
+```
+
+
+What happens in nn.CrossEntropyLoss()?
+
+It does 2 things at the same time.
+
+  
+1\. Computes softmax (logistic/softmax function)  
+2\. Computes cross entropy
+
+![](https://www.deeplearningwizard.com/deep_learning/practical_pytorch/images/cross_entropy_final_4.png)
 
 ### Step 6: Instantiate Optimizer Class
-- Simplified equation
-    - $\theta = \theta - \eta \cdot \nabla_\theta$
-        - $\theta$: parameters (our variables)
-        - $\eta$: learning rate (how fast we want to learn)
-        - $\nabla_\theta$: parameters' gradients
-- Even simplier equation
-    - `parameters = parameters - learning_rate * parameters_gradients`
-    - **At every iteration, we update our model's parameters**
+
+*   Simplified equation
+    *   \\(\\theta = \\theta - \\eta \\cdot \\nabla\_\\theta\\)
+        *   \\(\\theta\\): parameters (our variables)
+        *   \\(\\eta\\): learning rate (how fast we want to learn)
+        *   \\(\\nabla\_\\theta\\): parameters' gradients
+*   Even simplier equation
+    *   `parameters = parameters - learning_rate * parameters_gradients`
+    *   **At every iteration, we update our model's parameters**
+
+Create optimizer
+
+Similar to what we've covered above, this calculates the parameters' gradients and update them subsequently.
+
+```
+learning_rate = 0.001
+
+optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)  
+
+```
 
 
-!!! note "Create optimizer"
-    Similar to what we've covered above, this calculates the parameters' gradients and update them subsequently.
-    ```python
-    learning_rate = 0.001
-    
-    optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)  
-    ```
+Parameters In-Depth
 
-!!! note "Parameters In-Depth"
+You'll realize we have 2 sets of parameters, 10x784 which is A and 10x1 which is b in the \\(y = AX + b\\) equation where X is our input of size 784.
 
-    You'll realize we have 2 sets of parameters, 10x784 which is A and 10x1 which is b in the $y = AX + b$ equation where X is our input of size 784.
-    
-    We'll go into details subsequently how these parameters interact with our input to produce our 10x1 output. 
-    
-    ```python
-    # Type of parameter object
-    print(model.parameters())
-    
-    # Length of parameters
-    print(len(list(model.parameters())))
-    
-    # FC 1 Parameters 
-    print(list(model.parameters())[0].size())
-    
-    # FC 1 Bias Parameters
-    print(list(model.parameters())[1].size())
-    ```
+We'll go into details subsequently how these parameters interact with our input to produce our 10x1 output.
 
-```python
+```
+# Type of parameter object
+print(model.parameters())
+
+# Length of parameters
+print(len(list(model.parameters())))
+
+# FC 1 Parameters 
+print(list(model.parameters())[0].size())
+
+# FC 1 Bias Parameters
+print(list(model.parameters())[1].size())
+
+```
+
+
+```
 <generator object Module.parameters at 0x7ff7c884f830>
 2
 torch.Size([10, 784])
@@ -777,90 +775,92 @@ torch.Size([10])
 ```
 
 
+Quick Matrix Product Review
 
-!!! note "Quick Matrix Product Review"
-    - Example 1: **matrix product**
-        - $A: (100, 10)$
-        - $B: (10, 1)$
-        - $A \cdot B = (100, 10) \cdot (10, 1) = (100, 1)$
-    - Example 2: **matrix product**
-        - $A: (50, 5)$
-        - $B: (5, 2)$
-        - $A \cdot B = (50, 5) \cdot (5, 2) = (50, 2)$
-    - Example 3: **element-wise addition**
-        - $A: (10, 1)$
-        - $B: (10, 1)$
-        - $A + B = (10, 1)$
+*   Example 1: **matrix product**
+    *   \\(A: (100, 10)\\)
+    *   \\(B: (10, 1)\\)
+    *   \\(A \\cdot B = (100, 10) \\cdot (10, 1) = (100, 1)\\)
+*   Example 2: **matrix product**
+    *   \\(A: (50, 5)\\)
+    *   \\(B: (5, 2)\\)
+    *   \\(A \\cdot B = (50, 5) \\cdot (5, 2) = (50, 2)\\)
+*   Example 3: **element-wise addition**
+    *   \\(A: (10, 1)\\)
+    *   \\(B: (10, 1)\\)
+    *   \\(A + B = (10, 1)\\)
 
-![](./images/lr_params2.png)
+![](https://www.deeplearningwizard.com/deep_learning/practical_pytorch/images/lr_params2.png)
 
 ### Step 7: Train Model
 
-!!! note "7 step process for training models"
-    - Process 
-        1. Convert inputs/labels to tensors with gradients
-        2. Clear gradient buffets
-        3. Get output given inputs
-        4. Get loss
-        5. Get gradients w.r.t. parameters
-        6. Update parameters using gradients
-            - `parameters = parameters - learning_rate * parameters_gradients`
-        7. REPEAT
-    
-    
-    ```python
-    iter = 0
-    for epoch in range(num_epochs):
-        for i, (images, labels) in enumerate(train_loader):
-            # Load images as Variable
-            images = images.view(-1, 28*28).requires_grad_()
-            labels = labels
-            
-            # Clear gradients w.r.t. parameters
-            optimizer.zero_grad()
-            
-            # Forward pass to get output/logits
-            outputs = model(images)
-            
-            # Calculate Loss: softmax --> cross entropy loss
-            loss = criterion(outputs, labels)
-            
-            # Getting gradients w.r.t. parameters
-            loss.backward()
-            
-            # Updating parameters
-            optimizer.step()
-            
-            iter += 1
-            
-            if iter % 500 == 0:
-                # Calculate Accuracy         
-                correct = 0
-                total = 0
-                # Iterate through test dataset
-                for images, labels in test_loader:
-                    # Load images to a Torch Variable
-                    images = images.view(-1, 28*28).requires_grad_()
-                    
-                    # Forward pass only to get logits/output
-                    outputs = model(images)
-                    
-                    # Get predictions from the maximum value
-                    _, predicted = torch.max(outputs.data, 1)
-                    
-                    # Total number of labels
-                    total += labels.size(0)
-                    
-                    # Total correct predictions
-                    correct += (predicted == labels).sum()
-                
-                accuracy = 100 * correct / total
-                
-                # Print Loss
-                print('Iteration: {}. Loss: {}. Accuracy: {}'.format(iter, loss.item(), accuracy))
-    ```
+7 step process for training models
 
-```python
+*   Process
+    1.  Convert inputs/labels to tensors with gradients
+    2.  Clear gradient buffets
+    3.  Get output given inputs
+    4.  Get loss
+    5.  Get gradients w.r.t. parameters
+    6.  Update parameters using gradients
+        *   `parameters = parameters - learning_rate * parameters_gradients`
+    7.  REPEAT
+
+```
+iter = 0
+for epoch in range(num_epochs):
+    for i, (images, labels) in enumerate(train_loader):
+        # Load images as Variable
+        images = images.view(-1, 28*28).requires_grad_()
+        labels = labels
+
+        # Clear gradients w.r.t. parameters
+        optimizer.zero_grad()
+
+        # Forward pass to get output/logits
+        outputs = model(images)
+
+        # Calculate Loss: softmax --> cross entropy loss
+        loss = criterion(outputs, labels)
+
+        # Getting gradients w.r.t. parameters
+        loss.backward()
+
+        # Updating parameters
+        optimizer.step()
+
+        iter += 1
+
+        if iter % 500 == 0:
+            # Calculate Accuracy         
+            correct = 0
+            total = 0
+            # Iterate through test dataset
+            for images, labels in test_loader:
+                # Load images to a Torch Variable
+                images = images.view(-1, 28*28).requires_grad_()
+
+                # Forward pass only to get logits/output
+                outputs = model(images)
+
+                # Get predictions from the maximum value
+                _, predicted = torch.max(outputs.data, 1)
+
+                # Total number of labels
+                total += labels.size(0)
+
+                # Total correct predictions
+                correct += (predicted == labels).sum()
+
+            accuracy = 100 * correct / total
+
+            # Print Loss
+            print('Iteration: {}. Loss: {}. Accuracy: {}'.format(iter, loss.item(), accuracy))
+
+```
+
+
+```
 Iteration: 500. Loss: 1.8513233661651611. Accuracy: 70
 Iteration: 1000. Loss: 1.5732524394989014. Accuracy: 77
 Iteration: 1500. Loss: 1.3840199708938599. Accuracy: 79
@@ -873,24 +873,27 @@ Iteration: 3000. Loss: 1.002761721611023. Accuracy: 82
 
 #### Break Down Accuracy Calculation
 
+Printing outputs of our model
 
-!!! note "Printing outputs of our model"
-    As we've trained our model, we can extract the accuracy calculation portion to understand what's happening without re-training the model.
-    
-    This would print out the output of the model's predictions on your notebook.
-    
-    ```python
-    iter_test = 0
-    for images, labels in test_loader:
-        iter_test += 1
-        images = images.view(-1, 28*28).requires_grad_()
-        outputs = model(images)
-        if iter_test == 1:
-            print('OUTPUTS')
-            print(outputs)
-        _, predicted = torch.max(outputs.data, 1)
-    ```
-```python
+As we've trained our model, we can extract the accuracy calculation portion to understand what's happening without re-training the model.
+
+This would print out the output of the model's predictions on your notebook.
+
+```
+iter_test = 0
+for images, labels in test_loader:
+    iter_test += 1
+    images = images.view(-1, 28*28).requires_grad_()
+    outputs = model(images)
+    if iter_test == 1:
+        print('OUTPUTS')
+        print(outputs)
+    _, predicted = torch.max(outputs.data, 1)
+
+```
+
+
+```
 OUTPUTS
 tensor([[-0.4181, -1.0784, -0.4840, -0.0985, -0.2394, -0.1801, -1.1639,
           2.9352, -0.1552,  0.8852],
@@ -1092,119 +1095,134 @@ tensor([[-0.4181, -1.0784, -0.4840, -0.0985, -0.2394, -0.1801, -1.1639,
          -0.9946,  0.2010, -0.7731],
         [-1.1263, -1.7484,  0.0041, -0.5439,  1.7242, -0.9475, -0.3835,
           0.8452,  0.3077,  2.2689]])
+
 ```
-    
 
 
-!!! note "Printing output size"
-    This produces a 100x10 matrix because each iteration has a batch size of 100 and each prediction across the 10 classes, with the largest number indicating the likely number it is predicting.
-    ```python
-    iter_test = 0
-    for images, labels in test_loader:
-        iter_test += 1
-        images = images.view(-1, 28*28).requires_grad_()
-        outputs = model(images)
-        if iter_test == 1:
-            print('OUTPUTS')
-            print(outputs.size())
-        _, predicted = torch.max(outputs.data, 1)
-    ```
+Printing output size
 
-```python
+This produces a 100x10 matrix because each iteration has a batch size of 100 and each prediction across the 10 classes, with the largest number indicating the likely number it is predicting.
+
+```
+iter_test = 0
+for images, labels in test_loader:
+    iter_test += 1
+    images = images.view(-1, 28*28).requires_grad_()
+    outputs = model(images)
+    if iter_test == 1:
+        print('OUTPUTS')
+        print(outputs.size())
+    _, predicted = torch.max(outputs.data, 1)
+
+```
+
+
+```
 OUTPUTS
 torch.Size([100, 10])
+
 ```
 
 
+Printing one output
 
-!!! note "Printing one output"
-    This would be a 1x10 matrix where the largest number is what the model thinks the image is. Here we can see that in the tensor, position 7 has the largest number, indicating the model thinks the image is 7.
-    
-    number 0: -0.4181
-    <br /> number 1: -1.0784
-    <br />...
-    <br /> number 7: 2.9352
-    ```python
-    iter_test = 0
-    for images, labels in test_loader:
-        iter_test += 1
-        images = images.view(-1, 28*28).requires_grad_()
-        outputs = model(images)
-        if iter_test == 1:
-            print('OUTPUTS')
-            print(outputs[0, :])
-        _, predicted = torch.max(outputs.data, 1)
-    ```
+This would be a 1x10 matrix where the largest number is what the model thinks the image is. Here we can see that in the tensor, position 7 has the largest number, indicating the model thinks the image is 7.
+
+number 0: -0.4181  
+number 1: -1.0784  
+...  
+number 7: 2.9352
+
+```
+iter_test = 0
+for images, labels in test_loader:
+    iter_test += 1
+    images = images.view(-1, 28*28).requires_grad_()
+    outputs = model(images)
+    if iter_test == 1:
+        print('OUTPUTS')
+        print(outputs[0, :])
+    _, predicted = torch.max(outputs.data, 1)
+
+```
+
 
 ```
 OUTPUTS
 tensor([-0.4181, -1.0784, -0.4840, -0.0985, -0.2394, -0.1801, -1.1639,
          2.9352, -0.1552,  0.8852])
+
 ```
 
-!!! note "Printing prediction output"
-    Because our output is of size 100 (our batch size), our prediction size would also of the size 100.
-    
-    ```python
-    iter_test = 0
-    for images, labels in test_loader:
-        iter_test += 1
-        images = images.view(-1, 28*28).requires_grad_()
-        outputs = model(images)
-        _, predicted = torch.max(outputs.data, 1)
-        if iter_test == 1:
-            print('PREDICTION')
-            print(predicted.size())
-    ```
 
-```python
+Printing prediction output
+
+Because our output is of size 100 (our batch size), our prediction size would also of the size 100.
+
+```
+iter_test = 0
+for images, labels in test_loader:
+    iter_test += 1
+    images = images.view(-1, 28*28).requires_grad_()
+    outputs = model(images)
+    _, predicted = torch.max(outputs.data, 1)
+    if iter_test == 1:
+        print('PREDICTION')
+        print(predicted.size())
+
+```
+
+
+```
 PREDICTION
 torch.Size([100])
-```
 
-!!! note "Print prediction value"
-    We are printing our prediction which as verified above, should be digit 7.
-    
-    ```python
-    iter_test = 0
-    for images, labels in test_loader:
-        iter_test += 1
-        images = images.view(-1, 28*28).requires_grad_()
-        outputs = model(images)
-        _, predicted = torch.max(outputs.data, 1)
-        if iter_test == 1:
-            print('PREDICTION')
-            print(predicted[0])
-    ```
-
-```python
-PREDICTION
-tensor(7)
 ```
 
 
-!!! note "Print prediction, label and label size"
-    We are trying to show what we are predicting and the actual values. In this case, we're predicting the right value 7!
-    
-    ```python
-    iter_test = 0
-    for images, labels in test_loader:
-        iter_test += 1
-        images = images.view(-1, 28*28).requires_grad_()
-        outputs = model(images)
-        _, predicted = torch.max(outputs.data, 1)
-        if iter_test == 1:
-            print('PREDICTION')
-            print(predicted[0])
-            
-            print('LABEL SIZE')
-            print(labels.size())
-            
-            print('LABEL FOR IMAGE 0')
-            print(labels[0])
-    ```
+Print prediction value
 
-```python
+We are printing our prediction which as verified above, should be digit 7.
+
+```
+iter_test = 0
+for images, labels in test_loader:
+    iter_test += 1
+    images = images.view(-1, 28*28).requires_grad_()
+    outputs = model(images)
+    _, predicted = torch.max(outputs.data, 1)
+    if iter_test == 1:
+        print('PREDICTION')
+        print(predicted[0])
+
+```
+
+
+Print prediction, label and label size
+
+We are trying to show what we are predicting and the actual values. In this case, we're predicting the right value 7!
+
+```
+iter_test = 0
+for images, labels in test_loader:
+    iter_test += 1
+    images = images.view(-1, 28*28).requires_grad_()
+    outputs = model(images)
+    _, predicted = torch.max(outputs.data, 1)
+    if iter_test == 1:
+        print('PREDICTION')
+        print(predicted[0])
+
+        print('LABEL SIZE')
+        print(labels.size())
+
+        print('LABEL FOR IMAGE 0')
+        print(labels[0])
+
+```
+
+
+```
 PREDICTION
 tensor(7)
 
@@ -1213,32 +1231,36 @@ torch.Size([100])
 
 LABEL FOR IMAGE 0
 tensor(7)
+
 ```
 
 
-!!! note "Print second prediction and ground truth"
-    Again, the prediction is correct. Naturally, as our model is quite competent in this simple task.
-    
-    ```python
-    iter_test = 0
-    for images, labels in test_loader:
-        iter_test += 1
-        images = images.view(-1, 28*28).requires_grad_()
-        outputs = model(images)
-        _, predicted = torch.max(outputs.data, 1)
-        
-        if iter_test == 1:
-            print('PREDICTION')
-            print(predicted[1])
-            
-            print('LABEL SIZE')
-            print(labels.size())
-            
-            print('LABEL FOR IMAGE 1')
-            print(labels[1])
-    ```
+Print second prediction and ground truth
 
-```python
+Again, the prediction is correct. Naturally, as our model is quite competent in this simple task.
+
+```
+iter_test = 0
+for images, labels in test_loader:
+    iter_test += 1
+    images = images.view(-1, 28*28).requires_grad_()
+    outputs = model(images)
+    _, predicted = torch.max(outputs.data, 1)
+
+    if iter_test == 1:
+        print('PREDICTION')
+        print(predicted[1])
+
+        print('LABEL SIZE')
+        print(labels.size())
+
+        print('LABEL FOR IMAGE 1')
+        print(labels[1])
+
+```
+
+
+```
 PREDICTION
 tensor(2)
 
@@ -1250,53 +1272,57 @@ tensor(2)
 
 ```
 
-!!! note "Print accuracy"
-    Now we know what each object represents, we can understand how we arrived at our accuracy numbers.
-    
-    One last thing to note is that `correct.item()` has this syntax is because `correct` is a PyTorch tensor and to get the value to compute with `total` which is an integer, we need to do this.
-    ```python
-    correct = 0
-    total = 0
-    iter_test = 0
-    for images, labels in test_loader:
-        iter_test += 1
-        images = images.view(-1, 28*28).requires_grad_()
-        outputs = model(images)
-        _, predicted = torch.max(outputs.data, 1)
-        
-        # Total number of labels
-        total += labels.size(0)
-    
-        # Total correct predictions
-        correct += (predicted == labels).sum()
-    
-    accuracy = 100 * (correct.item() / total)
-    
-    print(accuracy)
-    ```
 
-```python
-82.94
+Print accuracy
+
+Now we know what each object represents, we can understand how we arrived at our accuracy numbers.
+
+One last thing to note is that `correct.item()` has this syntax is because `correct` is a PyTorch tensor and to get the value to compute with `total` which is an integer, we need to do this.
+
+```
+correct = 0
+total = 0
+iter_test = 0
+for images, labels in test_loader:
+    iter_test += 1
+    images = images.view(-1, 28*28).requires_grad_()
+    outputs = model(images)
+    _, predicted = torch.max(outputs.data, 1)
+
+    # Total number of labels
+    total += labels.size(0)
+
+    # Total correct predictions
+    correct += (predicted == labels).sum()
+
+accuracy = 100 * (correct.item() / total)
+
+print(accuracy)
+
 ```
 
-!!! note "Explanation of Python's .sum() function"
-    Python's .sum() function allows you to do a comparison between two matrices and sum the ones that return `True` or in our case, those predictions that match actual labels (correct predictions).
-    
-    ```python
-    # Explaining .sum() python built-in function
-    # correct += (predicted == labels).sum()
-    import numpy as np
-    a = np.ones((10))
-    print(a)
-    b = np.ones((10))
-    print(b)
-    
-    print(a == b)
-    
-    print((a == b).sum())
-    ```
 
-```python
+Explanation of Python's .sum() function
+
+Python's .sum() function allows you to do a comparison between two matrices and sum the ones that return `True` or in our case, those predictions that match actual labels (correct predictions).
+
+```
+# Explaining .sum() python built-in function
+# correct += (predicted == labels).sum()
+import numpy as np
+a = np.ones((10))
+print(a)
+b = np.ones((10))
+print(b)
+
+print(a == b)
+
+print((a == b).sum())
+
+```
+
+
+```
 # matrix a
 [1. 1. 1. 1. 1. 1. 1. 1. 1. 1.]
 
@@ -1308,320 +1334,327 @@ tensor(2)
 
 # number of elementswhere a matches b
 10
-```
 
+```
 
 
 #### Saving Model
 
-!!! note "Saving PyTorch model"
-    This is how you save your model. Feel free to just change `save_model = True` to save your model
-    ```python
-    save_model = False
-    if save_model is True:
-        # Saves only parameters
-        torch.save(model.state_dict(), 'awesome_model.pkl')
-    ```
+Saving PyTorch model
 
-## Building a Logistic Regression Model with PyTorch (GPU)
+This is how you save your model. Feel free to just change `save_model = True` to save your model
+
+```
+save_model = False
+if save_model is True:
+    # Saves only parameters
+    torch.save(model.state_dict(), 'awesome_model.pkl')
+
+```
 
 
+Building a Logistic Regression Model with PyTorch (GPU)
+-----------------------------------------------------------------------------------------------------------------------------------
 
-!!! note "CPU version"
-    The usual 7-step process, getting repetitive by now which we like. 
-    
-    ```python
-    import torch
-    import torch.nn as nn
-    import torchvision.transforms as transforms
-    import torchvision.datasets as dsets
-    
-    '''
-    STEP 1: LOADING DATASET
-    '''
-    
-    train_dataset = dsets.MNIST(root='./data', 
-                                train=True, 
-                                transform=transforms.ToTensor(),
-                                download=True)
-    
-    test_dataset = dsets.MNIST(root='./data', 
-                               train=False, 
-                               transform=transforms.ToTensor())
-    
-    '''
-    STEP 2: MAKING DATASET ITERABLE
-    '''
-    
-    batch_size = 100
-    n_iters = 3000
-    num_epochs = n_iters / (len(train_dataset) / batch_size)
-    num_epochs = int(num_epochs)
-    
-    train_loader = torch.utils.data.DataLoader(dataset=train_dataset, 
-                                               batch_size=batch_size, 
-                                               shuffle=True)
-    
-    test_loader = torch.utils.data.DataLoader(dataset=test_dataset, 
-                                              batch_size=batch_size, 
-                                              shuffle=False)
-    
-    '''
-    STEP 3: CREATE MODEL CLASS
-    '''
-    class LogisticRegressionModel(nn.Module):
-        def __init__(self, input_size, num_classes):
-            super(LogisticRegressionModel, self).__init__()
-            self.linear = nn.Linear(input_dim, output_dim)
-        
-        def forward(self, x):
-            out = self.linear(x)
-            return out
-    
-    '''
-    STEP 4: INSTANTIATE MODEL CLASS
-    '''
-    input_dim = 28*28
-    output_dim = 10
-    
-    model = LogisticRegressionModel(input_dim, output_dim)
-    
-    '''
-    STEP 5: INSTANTIATE LOSS CLASS
-    '''
-    criterion = nn.CrossEntropyLoss()
-    
-    
-    '''
-    STEP 6: INSTANTIATE OPTIMIZER CLASS
-    '''
-    learning_rate = 0.001
-    
-    optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
-    
-    '''
-    STEP 7: TRAIN THE MODEL
-    '''
-    iter = 0
-    for epoch in range(num_epochs):
-        for i, (images, labels) in enumerate(train_loader):
-            # Load images as Variable
-            images = images.view(-1, 28*28).requires_grad_()
-            labels = labels
-            
-            # Clear gradients w.r.t. parameters
-            optimizer.zero_grad()
-            
-            # Forward pass to get output/logits
-            # 100 x 10
-            outputs = model(images)
-            
-            # Calculate Loss: softmax --> cross entropy loss
-            loss = criterion(outputs, labels)
-            
-            # Getting gradients w.r.t. parameters
-            loss.backward()
-            
-            # Updating parameters
-            optimizer.step()
-            
-            iter += 1
-            
-            if iter % 500 == 0:
-                # Calculate Accuracy         
-                correct = 0
-                total = 0
-                # Iterate through test dataset
-                for images, labels in test_loader:
-                    # Load images to a Torch Variable
-                    images = images.view(-1, 28*28).requires_grad_()
-                    
-                    # Forward pass only to get logits/output
-                    outputs = model(images)
-                    
-                    # Get predictions from the maximum value
-                    # 100 x 1
-                    _, predicted = torch.max(outputs.data, 1)
-                    
-                    # Total number of labels
-                    total += labels.size(0)
-                    
-                    # Total correct predictions
-                    correct += (predicted == labels).sum()
-                
-                accuracy = 100 * correct.item() / total
-                
-                # Print Loss
-                print('Iteration: {}. Loss: {}. Accuracy: {}'.format(iter, loss.item(), accuracy))
-    ```
+CPU version
 
-```python
+The usual 7-step process, getting repetitive by now which we like.
+
+```
+import torch
+import torch.nn as nn
+import torchvision.transforms as transforms
+import torchvision.datasets as dsets
+
+'''
+STEP 1: LOADING DATASET
+'''
+
+train_dataset = dsets.MNIST(root='./data', 
+                            train=True, 
+                            transform=transforms.ToTensor(),
+                            download=True)
+
+test_dataset = dsets.MNIST(root='./data', 
+                           train=False, 
+                           transform=transforms.ToTensor())
+
+'''
+STEP 2: MAKING DATASET ITERABLE
+'''
+
+batch_size = 100
+n_iters = 3000
+num_epochs = n_iters / (len(train_dataset) / batch_size)
+num_epochs = int(num_epochs)
+
+train_loader = torch.utils.data.DataLoader(dataset=train_dataset, 
+                                           batch_size=batch_size, 
+                                           shuffle=True)
+
+test_loader = torch.utils.data.DataLoader(dataset=test_dataset, 
+                                          batch_size=batch_size, 
+                                          shuffle=False)
+
+'''
+STEP 3: CREATE MODEL CLASS
+'''
+class LogisticRegressionModel(nn.Module):
+    def __init__(self, input_size, num_classes):
+        super(LogisticRegressionModel, self).__init__()
+        self.linear = nn.Linear(input_dim, output_dim)
+
+    def forward(self, x):
+        out = self.linear(x)
+        return out
+
+'''
+STEP 4: INSTANTIATE MODEL CLASS
+'''
+input_dim = 28*28
+output_dim = 10
+
+model = LogisticRegressionModel(input_dim, output_dim)
+
+'''
+STEP 5: INSTANTIATE LOSS CLASS
+'''
+criterion = nn.CrossEntropyLoss()
+
+
+'''
+STEP 6: INSTANTIATE OPTIMIZER CLASS
+'''
+learning_rate = 0.001
+
+optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
+
+'''
+STEP 7: TRAIN THE MODEL
+'''
+iter = 0
+for epoch in range(num_epochs):
+    for i, (images, labels) in enumerate(train_loader):
+        # Load images as Variable
+        images = images.view(-1, 28*28).requires_grad_()
+        labels = labels
+
+        # Clear gradients w.r.t. parameters
+        optimizer.zero_grad()
+
+        # Forward pass to get output/logits
+        # 100 x 10
+        outputs = model(images)
+
+        # Calculate Loss: softmax --> cross entropy loss
+        loss = criterion(outputs, labels)
+
+        # Getting gradients w.r.t. parameters
+        loss.backward()
+
+        # Updating parameters
+        optimizer.step()
+
+        iter += 1
+
+        if iter % 500 == 0:
+            # Calculate Accuracy         
+            correct = 0
+            total = 0
+            # Iterate through test dataset
+            for images, labels in test_loader:
+                # Load images to a Torch Variable
+                images = images.view(-1, 28*28).requires_grad_()
+
+                # Forward pass only to get logits/output
+                outputs = model(images)
+
+                # Get predictions from the maximum value
+                # 100 x 1
+                _, predicted = torch.max(outputs.data, 1)
+
+                # Total number of labels
+                total += labels.size(0)
+
+                # Total correct predictions
+                correct += (predicted == labels).sum()
+
+            accuracy = 100 * correct.item() / total
+
+            # Print Loss
+            print('Iteration: {}. Loss: {}. Accuracy: {}'.format(iter, loss.item(), accuracy))
+
+```
+
+
+```
 Iteration: 500. Loss: 1.876196026802063. Accuracy: 64.44
 Iteration: 1000. Loss: 1.5153584480285645. Accuracy: 75.68
 Iteration: 1500. Loss: 1.3521136045455933. Accuracy: 78.98
 Iteration: 2000. Loss: 1.2136967182159424. Accuracy: 80.95
 Iteration: 2500. Loss: 1.0934826135635376. Accuracy: 81.97
 Iteration: 3000. Loss: 1.024120569229126. Accuracy: 82.49
+
 ```
 
 
+GPU version
 
-!!! note "GPU version"
-    
-    2 things must be on GPU
-    <br />- `model`
-    <br />- `tensors`
+2 things must be on GPU  
+\- `model`  
+\- `tensors`
 
-    Remember step 4 and 7 will be affected and this will be the same for all model building moving forward.
-    
-    ```python
-    import torch
-    import torch.nn as nn
-    import torchvision.transforms as transforms
-    import torchvision.datasets as dsets
-    
-    '''
-    STEP 1: LOADING DATASET
-    '''
-    
-    train_dataset = dsets.MNIST(root='./data', 
-                                train=True, 
-                                transform=transforms.ToTensor(),
-                                download=True)
-    
-    test_dataset = dsets.MNIST(root='./data', 
-                               train=False, 
-                               transform=transforms.ToTensor())
-    
-    '''
-    STEP 2: MAKING DATASET ITERABLE
-    '''
-    
-    batch_size = 100
-    n_iters = 3000
-    num_epochs = n_iters / (len(train_dataset) / batch_size)
-    num_epochs = int(num_epochs)
-    
-    train_loader = torch.utils.data.DataLoader(dataset=train_dataset, 
-                                               batch_size=batch_size, 
-                                               shuffle=True)
-    
-    test_loader = torch.utils.data.DataLoader(dataset=test_dataset, 
-                                              batch_size=batch_size, 
-                                              shuffle=False)
-    
-    '''
-    STEP 3: CREATE MODEL CLASS
-    '''
-    class LogisticRegressionModel(nn.Module):
-        def __init__(self, input_size, num_classes):
-            super(LogisticRegressionModel, self).__init__()
-            self.linear = nn.Linear(input_dim, output_dim)
-        
-        def forward(self, x):
-            out = self.linear(x)
-            return out
-    
-    '''
-    STEP 4: INSTANTIATE MODEL CLASS
-    '''
-    input_dim = 28*28
-    output_dim = 10
-    
-    model = LogisticRegressionModel(input_dim, output_dim)
-    
-    #######################
-    #  USE GPU FOR MODEL  #
-    #######################
-    
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    model.to(device)
-    
-    '''
-    STEP 5: INSTANTIATE LOSS CLASS
-    '''
-    criterion = nn.CrossEntropyLoss()
-    
-    
-    '''
-    STEP 6: INSTANTIATE OPTIMIZER CLASS
-    '''
-    learning_rate = 0.001
-    
-    optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
-    
-    '''
-    STEP 7: TRAIN THE MODEL
-    '''
-    iter = 0
-    for epoch in range(num_epochs):
-        for i, (images, labels) in enumerate(train_loader):
-            
-            #######################
-            #  USE GPU FOR MODEL  #
-            #######################
-            images = images.view(-1, 28*28).requires_grad_().to(device)
-            labels = labels.to(device)
-            
-            # Clear gradients w.r.t. parameters
-            optimizer.zero_grad()
-            
-            # Forward pass to get output/logits
-            outputs = model(images)
-            
-            # Calculate Loss: softmax --> cross entropy loss
-            loss = criterion(outputs, labels)
-            
-            # Getting gradients w.r.t. parameters
-            loss.backward()
-            
-            # Updating parameters
-            optimizer.step()
-            
-            iter += 1
-            
-            if iter % 500 == 0:
-                # Calculate Accuracy         
-                correct = 0
-                total = 0
-                # Iterate through test dataset
-                for images, labels in test_loader:
-                    #######################
-                    #  USE GPU FOR MODEL  #
-                    #######################
-                    images = images.view(-1, 28*28).to(device)
-                    
-                    # Forward pass only to get logits/output
-                    outputs = model(images)
-                    
-                    # Get predictions from the maximum value
-                    _, predicted = torch.max(outputs.data, 1)
-                    
-                    # Total number of labels
-                    total += labels.size(0)
-                    
-                    #######################
-                    #  USE GPU FOR MODEL  #
-                    #######################
-                    # Total correct predictions
-                    if torch.cuda.is_available():
-                        correct += (predicted.cpu() == labels.cpu()).sum()
-                    else:
-                        correct += (predicted == labels).sum()
-                
-                accuracy = 100 * correct.item() / total
-                
-                # Print Loss
-                print('Iteration: {}. Loss: {}. Accuracy: {}'.format(iter, loss.item(), accuracy))
-    ```
+Remember step 4 and 7 will be affected and this will be the same for all model building moving forward.
 
-```python
+```
+import torch
+import torch.nn as nn
+import torchvision.transforms as transforms
+import torchvision.datasets as dsets
+
+'''
+STEP 1: LOADING DATASET
+'''
+
+train_dataset = dsets.MNIST(root='./data', 
+                            train=True, 
+                            transform=transforms.ToTensor(),
+                            download=True)
+
+test_dataset = dsets.MNIST(root='./data', 
+                           train=False, 
+                           transform=transforms.ToTensor())
+
+'''
+STEP 2: MAKING DATASET ITERABLE
+'''
+
+batch_size = 100
+n_iters = 3000
+num_epochs = n_iters / (len(train_dataset) / batch_size)
+num_epochs = int(num_epochs)
+
+train_loader = torch.utils.data.DataLoader(dataset=train_dataset, 
+                                           batch_size=batch_size, 
+                                           shuffle=True)
+
+test_loader = torch.utils.data.DataLoader(dataset=test_dataset, 
+                                          batch_size=batch_size, 
+                                          shuffle=False)
+
+'''
+STEP 3: CREATE MODEL CLASS
+'''
+class LogisticRegressionModel(nn.Module):
+    def __init__(self, input_size, num_classes):
+        super(LogisticRegressionModel, self).__init__()
+        self.linear = nn.Linear(input_dim, output_dim)
+
+    def forward(self, x):
+        out = self.linear(x)
+        return out
+
+'''
+STEP 4: INSTANTIATE MODEL CLASS
+'''
+input_dim = 28*28
+output_dim = 10
+
+model = LogisticRegressionModel(input_dim, output_dim)
+
+#######################
+#  USE GPU FOR MODEL  #
+#######################
+
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+model.to(device)
+
+'''
+STEP 5: INSTANTIATE LOSS CLASS
+'''
+criterion = nn.CrossEntropyLoss()
+
+
+'''
+STEP 6: INSTANTIATE OPTIMIZER CLASS
+'''
+learning_rate = 0.001
+
+optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
+
+'''
+STEP 7: TRAIN THE MODEL
+'''
+iter = 0
+for epoch in range(num_epochs):
+    for i, (images, labels) in enumerate(train_loader):
+
+        #######################
+        #  USE GPU FOR MODEL  #
+        #######################
+        images = images.view(-1, 28*28).requires_grad_().to(device)
+        labels = labels.to(device)
+
+        # Clear gradients w.r.t. parameters
+        optimizer.zero_grad()
+
+        # Forward pass to get output/logits
+        outputs = model(images)
+
+        # Calculate Loss: softmax --> cross entropy loss
+        loss = criterion(outputs, labels)
+
+        # Getting gradients w.r.t. parameters
+        loss.backward()
+
+        # Updating parameters
+        optimizer.step()
+
+        iter += 1
+
+        if iter % 500 == 0:
+            # Calculate Accuracy         
+            correct = 0
+            total = 0
+            # Iterate through test dataset
+            for images, labels in test_loader:
+                #######################
+                #  USE GPU FOR MODEL  #
+                #######################
+                images = images.view(-1, 28*28).to(device)
+
+                # Forward pass only to get logits/output
+                outputs = model(images)
+
+                # Get predictions from the maximum value
+                _, predicted = torch.max(outputs.data, 1)
+
+                # Total number of labels
+                total += labels.size(0)
+
+                #######################
+                #  USE GPU FOR MODEL  #
+                #######################
+                # Total correct predictions
+                if torch.cuda.is_available():
+                    correct += (predicted.cpu() == labels.cpu()).sum()
+                else:
+                    correct += (predicted == labels).sum()
+
+            accuracy = 100 * correct.item() / total
+
+            # Print Loss
+            print('Iteration: {}. Loss: {}. Accuracy: {}'.format(iter, loss.item(), accuracy))
+
+```
+
+
+```
 Iteration: 500. Loss: 1.8571407794952393. Accuracy: 68.99
 Iteration: 1000. Loss: 1.5415704250335693. Accuracy: 75.86
 Iteration: 1500. Loss: 1.2755383253097534. Accuracy: 78.92
 Iteration: 2000. Loss: 1.2468739748001099. Accuracy: 80.72
 Iteration: 2500. Loss: 1.0708973407745361. Accuracy: 81.73
 Iteration: 3000. Loss: 1.0359245538711548. Accuracy: 82.74
+
 ```
-
-
