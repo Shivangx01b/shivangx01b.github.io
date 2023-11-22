@@ -35,7 +35,7 @@ A few minutes after your model has started Running, click the 'Notebook' button 
 
 Note: You can connect your cloud credits (AWS or GCP) by clicking "Org: " on the top right, and in the panel that slides over, click "Connect AWS" or "Connect GCP" under "Connect your cloud" and follow the instructions linked to attach your credentials.
 
-```
+```bash
 
 !pip install -q -U bitsandbytes
 !pip install -q -U git+https://github.com/huggingface/transformers.git
@@ -50,7 +50,7 @@ Note: You can connect your cloud credits (AWS or GCP) by clicking "Org: " on the
 
 Set up the Accelerator. I'm not sure if we really need this for a QLoRA given its [description](https://huggingface.co/docs/accelerate/v0.19.0/en/usage_guides/fsdp) (I have to read more about it) but it seems it can't hurt, and it's helpful to have the code for future reference. You can always comment out the accelerator if you want to try without.
 
-```
+```python
 from accelerate import FullyShardedDataParallelPlugin, Accelerator
 from torch.distributed.fsdp.fully_sharded_data_parallel import FullOptimStateDictConfig, FullStateDictConfig
 
@@ -72,7 +72,7 @@ Here's where you load your own data. You want the data formatted in a `.jsonl` f
 
 To prepare your dataset for loading, all you need is a `.jsonl` file structured something like this:
 
-```
+```bash
 {"input": "What color is the sky?", "output": "The sky is blue."}
 {"input": "Where is the best place to get cloud GPUs?", "output": "Brev.dev"}
 
@@ -81,7 +81,7 @@ To prepare your dataset for loading, all you need is a `.jsonl` file structured 
 
 If you choose to model your data as input/output pairs, you'll want to use something like the second `formatting_func` below, which will will combine all your features into one input string.
 
-```
+```python
 from datasets import load_dataset
 
 train_dataset = load_dataset('json', data_files='notes.jsonl', split='train')
@@ -94,7 +94,7 @@ eval_dataset = load_dataset('json', data_files='notes_validation.jsonl', split='
 
 Then create a formatting\_func to structure training examples as prompts. In my case, my data was just notes like this:
 
-```
+```bash
 {"note": "note-for-model-to-predict"}
 {"note": "note-for-model-to-predict-1"}
 {"note": "note-for-model-to-predict-2"}
@@ -104,7 +104,7 @@ Then create a formatting\_func to structure training examples as prompts. In my 
 
 So the formatting\_func I used was:
 
-```
+```python
 def formatting_func(example):
     text = f"### The following is a note by Eevee the Dog: {example['note']}"
     return text
@@ -112,7 +112,7 @@ def formatting_func(example):
 ```
 
 
-```
+```python
 def formatting_func(example):
     text = f"### Question: {example['input']}\n ### Answer: {example['output']}"
     return text
@@ -124,7 +124,7 @@ def formatting_func(example):
 
 Let's now load Llama 2 7B - `meta-llama/Llama-2-7b-hf` - using 4-bit quantization!
 
-```
+```python
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
 
@@ -147,7 +147,7 @@ Set up the tokenizer. Add padding on the left as it [makes training use less mem
 
 For `model_max_length`, it's helpful to get a distribution of your data lengths. Let's first tokenize without the truncation/padding, so we can get a length distribution.
 
-```
+```python
 tokenizer = AutoTokenizer.from_pretrained(
     base_model_id,
     padding_side="left",
@@ -164,7 +164,7 @@ def generate_and_tokenize_prompt(prompt):
 
 Reformat the prompt and tokenize each sample:
 
-```
+```python
 tokenized_train_dataset = train_dataset.map(generate_and_tokenize_prompt)
 tokenized_val_dataset = eval_dataset.map(generate_and_tokenize_prompt)
 
@@ -173,7 +173,7 @@ tokenized_val_dataset = eval_dataset.map(generate_and_tokenize_prompt)
 
 Let's get a distribution of our dataset lengths, so we can determine the appropriate `max_length` for our input tensors.
 
-```
+```python
 import matplotlib.pyplot as plt
 
 def plot_data_lengths(tokenize_train_dataset, tokenized_val_dataset):
@@ -200,7 +200,7 @@ I'm using my personal notes to train the model, and they vary greatly in length.
 
 Now let's tokenize again with padding and truncation, and set up the tokenize function to make labels and input\_ids the same. This is basically what [self-supervised fine-tuning is](https://neptune.ai/blog/self-supervised-learning).
 
-```
+```python
 max_length = 512 
 
 def generate_and_tokenize_prompt2(prompt):
@@ -216,7 +216,7 @@ def generate_and_tokenize_prompt2(prompt):
 ```
 
 
-```
+```python
 tokenized_train_dataset = train_dataset.map(generate_and_tokenize_prompt2)
 tokenized_val_dataset = eval_dataset.map(generate_and_tokenize_prompt2)
 
@@ -225,7 +225,7 @@ tokenized_val_dataset = eval_dataset.map(generate_and_tokenize_prompt2)
 
 Check that `input_ids` is padded on the left with the `eos_token` (2) and there is an `eos_token` 2 added to the end, and the prompt starts with a `bos_token` (1).
 
-```
+```python
 print(tokenized_train_dataset[1]['input_ids'])
 
 ```
@@ -233,7 +233,7 @@ print(tokenized_train_dataset[1]['input_ids'])
 
 Now all the samples should be the same length, `max_length`.
 
-```
+```python
 plot_data_lengths(tokenized_train_dataset, tokenized_val_dataset)
 
 ```
@@ -243,7 +243,7 @@ plot_data_lengths(tokenized_train_dataset, tokenized_val_dataset)
 
 Optionally, you can check how Llama 2 7B does on one of your data samples. For example, if you have a dataset of users' biometric data to their health scores, you could test the following `eval_prompt`:
 
-```
+```python
 eval_prompt = """ Given the following biometric data, score the users' health, from 0-100.
 
 ### Biometric Data:
@@ -263,13 +263,13 @@ HRV=55
 
 The `eval_prompt` I used was:
 
-```
+```python
 eval_prompt = " The following is a note by Eevee the Dog: # "
 
 ```
 
 
-```
+```python
 model_input = tokenizer(eval_prompt, return_tensors="pt").to("cuda")
 
 model.eval()
@@ -285,7 +285,7 @@ Observe how the model does out of the box.
 
 Now, to start our fine-tuning, we have to apply some preprocessing to the model to prepare it for training. For that use the `prepare_model_for_kbit_training` method from PEFT.
 
-```
+```python
 from peft import prepare_model_for_kbit_training
 
 model.gradient_checkpointing_enable()
@@ -294,7 +294,7 @@ model = prepare_model_for_kbit_training(model)
 ```
 
 
-```
+```python
 def print_trainable_parameters(model):
     """
     Prints the number of trainable parameters in the model.
@@ -314,7 +314,7 @@ def print_trainable_parameters(model):
 
 Let's print the model to examine its layers, as we will apply QLoRA to all the linear layers of the model. Those layers are `q_proj`, `k_proj`, `v_proj`, `o_proj`, `gate_proj`, `up_proj`, `down_proj`, and `lm_head`.
 
-```
+```python
 print(model)
 
 ```
@@ -328,7 +328,7 @@ Here we define the LoRA config.
 
 The values used in the QLoRA paper were `r=64` and `lora_alpha=16`, and these are said to generalize well, but we will use `r=32` and `lora_alpha=64` so that we have more emphasis on the new fine-tuned data while also reducing computational complexity.
 
-```
+```python
 from peft import LoraConfig, get_peft_model
 
 config = LoraConfig(
@@ -360,7 +360,7 @@ model = accelerator.prepare_model(model)
 
 See how the model looks different now, with the LoRA adapters added:
 
-```
+```python
 print(model)
 
 ```
@@ -368,7 +368,7 @@ print(model)
 
 Let's use Weights & Biases to track our training metrics. You'll need to apply an API key when prompted. Feel free to skip this if you'd like, and just comment out the `wandb` parameters in the `Trainer` definition below.
 
-```
+```python
 !pip install -q wandb -U
 
 import wandb, os
@@ -389,7 +389,7 @@ A note on training. You can set the `max_steps` to be high initially, and examin
 
 You can interrupt the process via Kernel -> Interrupt Kernel in the top nav bar once you realize you didn't need to train anymore.
 
-```
+```python
 if torch.cuda.device_count() > 1: 
     model.is_parallelizable = True
     model.model_parallel = True
@@ -397,7 +397,7 @@ if torch.cuda.device_count() > 1:
 ```
 
 
-```
+```python
 import transformers
 from datetime import datetime
 
@@ -445,7 +445,7 @@ It's a good idea to kill the current process so that you don't run out of memory
 
 By default, the PEFT library will only save the QLoRA adapters, so we need to first load the base Llama 2 7B model from the Huggingface Hub:
 
-```
+```python
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
 
@@ -465,7 +465,7 @@ tokenizer = AutoTokenizer.from_pretrained(base_model_id, add_bos_token=True, tru
 
 Now load the QLoRA adapter from the appropriate checkpoint directory, i.e. the best performing model checkpoint:
 
-```
+```python
 from peft import PeftModel
 
 ft_model = PeftModel.from_pretrained(base_model, "llama2-7b-journal-finetune/checkpoint-500")
@@ -477,7 +477,7 @@ and run your inference!
 
 Let's try the same `eval_prompt` and thus `model_input` as above, and see if the new finetuned model performs better.
 
-```
+```python
 eval_prompt = " The following is a note by Eevee the Dog, which doesn't share anything too personal: # "
 model_input = tokenizer(eval_prompt, return_tensors="pt").to("cuda")
 
