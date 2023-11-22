@@ -1,5 +1,5 @@
 ---
-date: 2023-09-21 22:55:45
+date: 2023-09-22 22:55:45
 layout: post
 title: How to use QLoRA to Fine tune LLama2 with your own data
 image: https://i.ibb.co/fYqcFMh/f8d549f7-7525-4b0d-8f83-2f132740a6ba.webp
