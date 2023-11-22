@@ -9,13 +9,11 @@ tags:
   - machine learning
   - Neural Network
   - Pytorch
-  - Tensorflow
-  - Keras
-  - Linear Rgression
   - Generative AI
   - LLM
   - Fine tune
   - QLoRA
+  - LLama2
 author: shivangx01b
 ---
 
