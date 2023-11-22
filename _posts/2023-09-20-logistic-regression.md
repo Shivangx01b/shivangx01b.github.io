@@ -75,7 +75,7 @@ plt.show()
     
     
     
-![png](https://www.deeplearningwizard.com/deep_learning/practical_pytorch/pytorch_logistic_regression_files/pytorch_logistic_regression_5_1.png)
+![Alt Text](https://www.deeplearningwizard.com/deep_learning/practical_pytorch/pytorch_logistic_regression_files/pytorch_logistic_regression_5_1.png)
 
 **Note "Linear Regression Problem 2: Fever points are not predicted with the presence of outliers"**
 Previously at least some points could be properly predicted. However, with the presence of outliers, everything goes wonky for simple linear regression, having no predictive capacity at all.
@@ -96,7 +96,7 @@ plt.show()
 ```
 
 
-![png](https://www.deeplearningwizard.com/deep_learning/practical_pytorch/pytorch_logistic_regression_files/pytorch_logistic_regression_5_0.png)
+![Alt Text](https://www.deeplearningwizard.com/deep_learning/practical_pytorch/pytorch_logistic_regression_files/pytorch_logistic_regression_5_0.png)
 
 
 ### Logistic Regression In-Depth
@@ -105,7 +105,7 @@ plt.show()
 - Linear regression doesn't work
 - Instead of predicting direct values: **predict probability**
 
-![](https://www.deeplearningwizard.com/deep_learning/practical_pytorch/images/cross_entropy_final_4.png)
+![Alt Text](https://www.deeplearningwizard.com/deep_learning/practical_pytorch/images/cross_entropy_final_4.png)
 
 #### Logistic Function g()
 - **"Two-class logistic regression"**
@@ -212,7 +212,7 @@ print(-math.log(0.00001))
     - $Loss$: average cross entropy loss over N samples
 
 ## Building a Logistic Regression Model with PyTorch
-![](https://www.deeplearningwizard.com/deep_learning/practical_pytorch/images/lr2.png)
+![Alt Text](https://www.deeplearningwizard.com/deep_learning/practical_pytorch/images/lr2.png)
 
 ### Steps
 - Step 1: Load Dataset
@@ -452,7 +452,7 @@ plt.imshow(show_img, cmap='gray')
 ```
 
 
-![png](https://www.deeplearningwizard.com/deep_learning/practical_pytorch/pytorch_logistic_regression_files/pytorch_logistic_regression_24_1.png)
+![Alt Text](https://www.deeplearningwizard.com/deep_learning/practical_pytorch/pytorch_logistic_regression_files/pytorch_logistic_regression_24_1.png)
 
 
 
@@ -479,7 +479,7 @@ plt.imshow(show_img, cmap='gray')
 ```
 
 
-![png](https://www.deeplearningwizard.com/deep_learning/practical_pytorch/pytorch_logistic_regression_files/pytorch_logistic_regression_27_1.png)
+![Alt Text](https://www.deeplearningwizard.com/deep_learning/practical_pytorch/pytorch_logistic_regression_files/pytorch_logistic_regression_27_1.png)
 
 
 **Second element of tuple shows label**
@@ -545,7 +545,7 @@ show_img = test_dataset[0][0].numpy().reshape(28, 28)
 plt.imshow(show_img, cmap='gray')
 ```
 
-![png](https://www.deeplearningwizard.com/deep_learning/practical_pytorch/pytorch_logistic_regression_files/pytorch_logistic_regression_34_1.png)
+![Alt Text](https://www.deeplearningwizard.com/deep_learning/practical_pytorch/pytorch_logistic_regression_files/pytorch_logistic_regression_34_1.png)
 
 
 **Test dataset second element in tuple**
@@ -732,7 +732,7 @@ model = LogisticRegressionModel(input_dim, output_dim)
   <br /> 1. Computes softmax (logistic/softmax function)
   <br /> 2. Computes cross entropy
 
-![](https://www.deeplearningwizard.com/deep_learning/practical_pytorch/images/cross_entropy_final_4.png)
+![Alt Text](https://www.deeplearningwizard.com/deep_learning/practical_pytorch/images/cross_entropy_final_4.png)
 
 ### Step 6: Instantiate Optimizer Class
 - Simplified equation
@@ -797,7 +797,7 @@ torch.Size([10])
         - $B: (10, 1)$
         - $A + B = (10, 1)$
 
-![](https://www.deeplearningwizard.com/deep_learning/practical_pytorch/images/lr_params2.png)
+![Alt Text](https://www.deeplearningwizard.com/deep_learning/practical_pytorch/images/lr_params2.png)
 
 ### Step 7: Train Model
 
