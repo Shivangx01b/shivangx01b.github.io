@@ -9,7 +9,6 @@ tags:
   - Reinforcement Learning
   - Neural Network
   - Pytorch
-  - Logistic Regression
 author: shivangx01b
 ---
 
