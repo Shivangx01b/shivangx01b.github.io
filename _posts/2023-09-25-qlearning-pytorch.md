@@ -32,8 +32,7 @@ The CartPole task is designed so that the inputs to the agent are 4 real values 
 
 First, let’s import needed packages. Firstly, we need [gymnasium](https://gymnasium.farama.org/) for the environment, installed by using pip. This is a fork of the original OpenAI Gym project and maintained by the same team since Gym v0.19. If you are running this in Google Colab, run:
 
-```
-%%bash
+```bash
 pip3 install gymnasium[classic_control]
 
 ```
@@ -48,7 +47,7 @@ We’ll also use the following from PyTorch:
 *   automatic differentiation (`torch.autograd`)
     
 
-```
+```python
 import gymnasium as gym
 import math
 import random
@@ -89,7 +88,7 @@ For this, we’re going to need two classes:
 *   `ReplayMemory` - a cyclic buffer of bounded size that holds the transitions observed recently. It also implements a `.sample()` method for selecting a random batch of transitions for training.
     
 
-```
+```python
 Transition = namedtuple('Transition',
                         ('state', 'action', 'next_state', 'reward'))
 
@@ -145,7 +144,7 @@ To minimize this error, we will use the [Huber loss](https://en.wikipedia.org/wi
 
 Our model will be a feed forward neural network that takes in the difference between the current and previous screen patches. It has two outputs, representing \\(Q(s, \\mathrm{left})\\) and \\(Q(s, \\mathrm{right})\\) (where \\(s\\) is the input to the network). In effect, the network is trying to predict the _expected return_ of taking each action given the current input.
 
-```
+```python
 class DQN(nn.Module):
 
     def __init__(self, n_observations, n_actions):
@@ -176,7 +175,7 @@ This cell instantiates our model and its optimizer, and defines some utilities:
 *   `plot_durations` - a helper for plotting the duration of episodes, along with an average over the last 100 episodes (the measure used in the official evaluations). The plot will be underneath the cell containing the main training loop, and will update after every episode.
     
 
-```
+```python
 # BATCH_SIZE is the number of transitions sampled from the replay buffer
 # GAMMA is the discount factor as mentioned in the previous section
 # EPS_START is the starting value of epsilon
@@ -262,7 +261,7 @@ Finally, the code for training our model.
 
 Here, you can find an `optimize_model` function that performs a single step of the optimization. It first samples a batch, concatenates all the tensors into a single one, computes \\(Q(s\_t, a\_t)\\) and \\(V(s\_{t+1}) = \\max\_a Q(s\_{t+1}, a)\\), and combines them into our loss. By definition we set \\(V(s) = 0\\) if \\(s\\) is a terminal state. We also use a target network to compute \\(V(s\_{t+1})\\) for added stability. The target network is updated at every step with a [soft update](https://arxiv.org/pdf/1509.02971.pdf) controlled by the hyperparameter `TAU`, which was previously defined.
 
-```
+```python
 def optimize_model():
     if len(memory) < BATCH_SIZE:
         return
@@ -316,7 +315,7 @@ Below, you can find the main training loop. At the beginning we reset the enviro
 
 Below, num\_episodes is set to 600 if a GPU is available, otherwise 50 episodes are scheduled so training does not take too long. However, 50 episodes is insufficient for to observe good performance on CartPole. You should see the model constantly achieve 500 steps within 600 training episodes. Training RL agents can be a noisy process, so restarting training can produce better results if convergence is not observed.
 
-```
+```python
 if torch.cuda.is_available():
     num_episodes = 600
 else:
@@ -369,7 +368,7 @@ plt.show()
 
 ![Result](https://pytorch.org/tutorials/_images/sphx_glr_reinforcement_q_learning_001.png)
 
-```
+```bash
 /opt/conda/envs/py_3.10/lib/python3.10/site-packages/gymnasium/utils/passive_env_checker.py:249: DeprecationWarning:
 
 `np.bool8` is a deprecated alias for `np.bool_`.  (Deprecated NumPy 1.24)
