@@ -6,7 +6,7 @@ image: https://i.ibb.co/NChRHvs/qleanring.webp
 optimized_image: https://i.ibb.co/NChRHvs/qleanring.webp
 category: Reinforcement Learning
 tags:
-  - 
+  - Reinforcement Learning
   - Neural Network
   - Pytorch
   - Logistic Regression
