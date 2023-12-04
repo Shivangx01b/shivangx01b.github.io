@@ -1,7 +1,7 @@
 ---
 date: 2023-09-26 22:55:45
 layout: post
-title: Understanding Deep Q learning and Implementations in Pytorch
+title: Understanding PPO and Implementations in Pytorch
 image: https://i.ibb.co/FsHjmNf/ppo.webp
 optimized_image: https://i.ibb.co/FsHjmNf/ppo.webp
 category: Reinforcement Learning
